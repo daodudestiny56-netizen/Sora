@@ -17,7 +17,7 @@ everything a scam is useless, so we measure false alarms as carefully as missed 
 ## How it was made
 - Every message was **written by the team** from scam formats described in public warnings (CBN,
   bank fraud advisories and Nigerian tech press; sources in `docs/planning/01-RESEARCH.md`) and from
-  the shape of real alerts we receive. Drafting was AI-assisted, and we reviewed every item.
+  the shape of real alerts we receive. Drafting was AI-assisted. Each item is checked by a team member before it is used to report results.
 - **No real personal data.** Names are common placeholders, account numbers are masked
   (`22****871`), and phone numbers are clearly fake (`08000000001`, `0700 000 0000`).
 - Yorùbá, Hausa and Igbo items are short and still need review by native speakers.
