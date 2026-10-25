@@ -1,5 +1,6 @@
 import { after } from "next/server";
 import { analyze, InputError } from "@/lib/sora/analyze";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import type { Analysis } from "@/lib/sora/types";
 import {
   WELCOME,
@@ -44,6 +45,8 @@ export async function POST(req: Request) {
   });
 
   const creds = twilioCreds();
+  // Without Twilio keys the endpoint is unauthenticated, so protect the model quota.
+  if (!creds && !rateLimit(`wa:${clientIp(req)}`, 10, 60_000)) return new Response("rate limited", { status: 429 });
   if (creds && !validTwilioSignature(creds.token, publicUrl(req), params, req.headers.get("x-twilio-signature") ?? "")) {
     return new Response("forbidden", { status: 403 });
   }
