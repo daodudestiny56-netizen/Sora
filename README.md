@@ -202,17 +202,33 @@ yo 8, ha 6, ig 5). Synthetic, written from public scam warnings, no personal dat
 failure); *false-alarm rate* (legitimate messages flagged, because crying wolf teaches people to ignore
 warnings); accuracy; precision; *grounding rate* (model quotes found in the message); latency.
 
-| Engine | Scam recall | Strict recall¹ | False alarms | Accuracy | Grounding | p50 latency |
+| Engine | Scam recall | Strict recall¹ | False alarms | Accuracy | Grounding² | p50 / p95 latency |
 |---|---|---|---|---|---|---|
 | Rules only | 83.1% | 49.4% | 1.6% | 89.3% | n/a | <1 ms |
-| Gemma 4 26B A4B + rules | _pending: run `npm run eval -- --backend gemini`_ | | | | | |
-| Gemma 4 E4B + rules (local) | _pending_ | | | | | |
+| **Gemma 4 26B A4B + rules** | **98.9%** | **95.5%** | **1.6%** | **98.7%** | **100%** | 6.6 s / 8.7 s |
+| Gemma 4 E4B + rules (local) | _pending: needs a machine with Ollama_ | | | | | |
 
-¹ Flagged as *likely scam* rather than *suspicious*.
+¹ Flagged as *likely scam* rather than *suspicious*. ² Share of the model's quoted evidence found word
+for word in the message (0 invented quotes on this set).
+
+Run on 2026-10-25 with `npm run eval -- --backend gemini` (English explanations only, to keep the run
+short). Per language, Gemma 4 + rules caught every scam in Pidgin (7/7), Yorùbá (5/5), Hausa (5/5) and
+Igbo (4/4), but these subsets are tiny.
+
+**What went wrong, and why:**
+- **1 missed scam** (`e058`, "double your money" in Pidgin). Google's API returned an internal error
+  (HTTP 500) for this message even after retries, so it was judged by the rules alone, which miss it.
+  6 of 150 calls failed this way and fell back to rules. We report them as they happened rather than
+  re-running only the failures. When we re-ran `e058` by itself, Gemma flagged it as a likely scam.
+- **1 false alarm** (`e147`, a real bank reminder to "update your BVN details at any of our branches").
+  Gemma judged it fine, but the rules flag any BVN-update request and the safety floor keeps it at
+  *suspicious*. We accept this trade-off on purpose: a real bank can always be checked by calling it,
+  while a missed BVN phish can empty an account.
 
 **Reading the rules row honestly:** the rules were revised once after looking at their misses on this
 set, so their numbers are optimistic. The 15 scams they still miss are the subtle ones (fake jobs,
-investment schemes, requests from a "pastor" or "landlord") that need the model's reading of context.
+investment schemes, requests from a "pastor" or "landlord"). Gemma 4 catches these from context, which
+is why scam recall rises from 83.1% to 98.9% with no extra false alarms.
 **Yorùbá/Hausa/Igbo quality** will be reported as a native-speaker rating (1–5 on 30 explanations), not
 as a benchmark.
 
