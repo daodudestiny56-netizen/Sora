@@ -1,0 +1,53 @@
+{
+  "rules": {
+    "run": "rules",
+    "backend": "rules",
+    "model": null,
+    "date": "2026-10-25",
+    "dataset": {
+      "path": "data/eval.jsonl",
+      "n": 150,
+      "scam": 89,
+      "legit": 61
+    },
+    "accuracy": 89.3,
+    "scamRecall": 83.1,
+    "strictScamRecall": 49.4,
+    "falseAlarmRate": 1.6,
+    "precision": 98.7,
+    "groundingRate": null,
+    "fallbacks": 0,
+    "errors": 0,
+    "latencyMs": {
+      "p50": 0,
+      "p95": 1
+    },
+    "byLang": {
+      "en": {
+        "n": 121,
+        "scamRecall": 81.4,
+        "falseAlarmRate": 2
+      },
+      "pcm": {
+        "n": 10,
+        "scamRecall": 85.7,
+        "falseAlarmRate": 0
+      },
+      "yo": {
+        "n": 8,
+        "scamRecall": 80,
+        "falseAlarmRate": 0
+      },
+      "ha": {
+        "n": 6,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "ig": {
+        "n": 5,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      }
+    }
+  }
+}
