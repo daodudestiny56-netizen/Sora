@@ -44,3 +44,16 @@ describe("feature-phone channels", () => {
     expect(a.verdict).not.toBe("no_red_flags");
   });
 });
+
+describe("on-device OCR cleanup", () => {
+  it("rejoins wrapped chat-bubble lines and split links", async () => {
+    const { unwrap } = await import("@/lib/ocr");
+    const raw = "FirstBank-Alertz\nText Message - Today 9:41 AM\nYour account has been blocked due to\nincomplete BVN update. Verify your\nBVN at http://firstbank-bvn-\nupdate.com within 24hrs";
+    const t = unwrap(raw);
+    expect(t).toContain("http://firstbank-bvn-update.com");
+    expect(t).toContain("blocked due to incomplete BVN update");
+    expect(t.startsWith("FirstBank-Alertz\n")).toBe(true);
+    const { runRules } = await import("@/lib/sora/rules");
+    expect(runRules(t).verdict).toBe("likely_scam");
+  });
+});
