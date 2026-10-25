@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "Ṣọ́ra — Check a message before you send money",
   description:
     "Ṣọ́ra checks a suspicious SMS, WhatsApp message or screenshot, shows exactly which words are red flags, and explains it in English, Pidgin, Yorùbá, Hausa and Igbo. Works on button phones by SMS and USSD.",
+  applicationName: "Ṣọ́ra",
+  appleWebApp: { capable: true, title: "Ṣọ́ra", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
   openGraph: {
     title: "Ṣọ́ra — Be careful before you send money",
     description: "Open-weight AI scam checker for Nigerian families. English, Pidgin, Yorùbá, Hausa, Igbo. Smartphone or button phone.",
@@ -24,7 +27,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { themeColor: "#f4eee3" };
+export const viewport: Viewport = { themeColor: "#f4eee3", viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
