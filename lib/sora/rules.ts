@@ -143,7 +143,7 @@ const RULES: Rule[] = [
     category: "secrecy_pressure",
     severity: "medium",
     reason: "Asks you to keep it secret or not to call. Scammers isolate you from people who would warn you.",
-    pattern: /\b(?:don'?t tell (?:anyone|anybody|daddy|mummy|dad|mum)|keep (?:this|it) (?:secret|between us|confidential)|no tell anybody|don'?t call (?:me|my old number)|i can'?t (?:talk|call) now|i no fit (?:talk|call))\b/gi,
+    pattern: /\b(?:don'?t tell (?:anyone|anybody|daddy|mummy|dad|mum)|keep (?:this|it) (?:secret|between us|confidential)|no (?:go )?tell (?:anybody|anyone|daddy|mummy|papa|mama)|don'?t call (?:me|my old number)|i can'?t (?:talk|call) now|i no fit (?:talk|call))\b/gi,
   },
 
   // --- money ------------------------------------------------------------
