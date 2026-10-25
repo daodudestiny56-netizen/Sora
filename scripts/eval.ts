@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { analyze } from "../lib/sora/analyze";
-import type { Backend, Lang, Verdict } from "../lib/sora/types";
+import type { Backend, Explanation, Lang, Verdict } from "../lib/sora/types";
 
 interface Item {
   id: string;
@@ -61,6 +61,10 @@ async function main() {
   const limit = Number(arg("limit", "0"));
   const concurrency = Number(arg("concurrency", backend === "rules" ? "16" : "2"));
   const dataPath = arg("data", "data/eval.jsonl")!;
+  // Only a full run on the main eval set may update summary.json (the README table and the website read it).
+  // Partial runs (--limit) and runs on another file (--data) get their own files instead of overwriting it.
+  const isFullRun = path.resolve(dataPath) === path.resolve("data/eval.jsonl") && limit === 0;
+  const exportCsv = process.argv.includes("--export");
 
   let items: Item[] = readFileSync(dataPath, "utf8")
     .split(/\r?\n/)
@@ -69,6 +73,7 @@ async function main() {
   if (limit > 0) items = items.slice(0, limit);
 
   const rows: Row[] = new Array(items.length);
+  const explained: (Partial<Record<Lang, Explanation>> | undefined)[] = new Array(items.length);
   let next = 0;
   let done = 0;
   async function worker() {
@@ -80,6 +85,7 @@ async function main() {
         try {
           const a = await analyze({ text: it.text }, { backend, languages: langs });
           if (a.engine.fallbackReason?.includes("429") && attempt < 4) throw new Error("rate limited");
+          explained[i] = a.explanations;
           rows[i] = {
             id: it.id,
             label: it.label,
@@ -158,11 +164,36 @@ async function main() {
   const outDir = "eval/results";
   mkdirSync(outDir, { recursive: true });
   const safe = run.replace(/[^a-z0-9.-]+/gi, "_");
-  writeFileSync(path.join(outDir, `${safe}.json`), JSON.stringify({ summary, rows }, null, 2) + "\n");
-  const summaryPath = path.join(outDir, "summary.json");
-  const all = existsSync(summaryPath) ? JSON.parse(readFileSync(summaryPath, "utf8")) : {};
-  all[run] = summary;
-  writeFileSync(summaryPath, JSON.stringify(all, null, 2) + "\n");
+  const dataName = path.basename(dataPath, path.extname(dataPath));
+  const tag = isFullRun ? "" : `.${[dataName !== "eval" ? dataName : "", limit > 0 ? `first${limit}` : ""].filter(Boolean).join("-")}`;
+  writeFileSync(path.join(outDir, `${safe}${tag}.json`), JSON.stringify({ summary, rows }, null, 2) + "\n");
+  if (isFullRun) {
+    const summaryPath = path.join(outDir, "summary.json");
+    const all = existsSync(summaryPath) ? JSON.parse(readFileSync(summaryPath, "utf8")) : {};
+    all[run] = summary;
+    writeFileSync(summaryPath, JSON.stringify(all, null, 2) + "\n");
+  } else {
+    console.log(`\nPartial or held-out run: wrote eval/results/${safe}${tag}.json and left summary.json untouched.`);
+  }
+
+  if (exportCsv) {
+    // One row per message and language, with empty rating columns, for native-speaker review in Excel or Sheets.
+    const cell = (s: string) => `"${s.replace(/"/g, '""')}"`;
+    const lines = [
+      ["id", "label", "message", "language", "verdict", "summary", "actions", "correctness_1_5", "naturalness_1_5", "harmful_error_yes_no", "suggested_fix"],
+    ];
+    items.forEach((it, i) => {
+      for (const l of langs) {
+        const e = explained[i]?.[l];
+        if (!e) continue;
+        lines.push([it.id, it.label, it.text, l, rows[i].verdict, e.summary, e.actions.join(" | "), "", "", "", ""]);
+      }
+    });
+    const csvPath = path.join(outDir, `${safe}${tag}.explanations.csv`);
+    // The BOM makes Excel read the file as UTF-8, so tone marks and hooked letters display correctly.
+    writeFileSync(csvPath, "﻿" + lines.map((r) => r.map(cell).join(",")).join("\r\n") + "\r\n");
+    console.log(`\nExported ${lines.length - 1} explanations to ${csvPath}`);
+  }
 
   const misses = rows.filter((r) => r.label === "scam" && !flagged(r)).map((r) => r.id);
   const alarms = rows.filter((r) => r.label === "legit" && flagged(r)).map((r) => r.id);
