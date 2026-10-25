@@ -375,7 +375,7 @@ export function Evaluation() {
           <Reveal delay={0.12}>
             <p className="text-xs leading-relaxed text-muted">
               The dataset is small and synthetic: written from public scam warnings, with no real personal data. Rules were
-              revised once after error analysis on this set, so rules-only numbers are optimistic. Full method and
+              revised twice after error analysis on this set, so rules-only numbers are optimistic. Full method and
               limitations are in the repository.
             </p>
           </Reveal>

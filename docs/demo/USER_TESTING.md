@@ -35,8 +35,11 @@ eval set.
 ## B. Native-speaker rating (1 rater per language, about 30 minutes)
 For each of Yorùbá, Hausa, Igbo and Pidgin:
 
-1. Run `npm run eval -- --backend gemini --langs en,<code> --limit 30` and open
-   `eval/results/gemini_gemma-4-26b-a4b-it.json`. Or check 30 messages in the app with that language tab open.
+1. Run `npm run eval -- --backend gemini --langs en,<code> --limit 30 --export` (needs a Gemini key). It writes
+   `eval/results/gemini_gemma-4-26b-a4b-it.first30.explanations.csv`: one row per message and language, with the
+   message, the explanation and empty rating columns. Open it in Excel or Google Sheets and send it to the rater.
+   A partial run never overwrites `summary.json`, so the README table is safe. Or check 30 messages in the app
+   with that language tab open.
 2. For each explanation, the rater scores:
    - **Correctness (1–5):** does it say the right thing about the message?
    - **Naturalness (1–5):** does it sound like a fluent speaker? Are tone marks / special letters right?

@@ -10,11 +10,11 @@
       "scam": 89,
       "legit": 61
     },
-    "accuracy": 89.3,
-    "scamRecall": 83.1,
-    "strictScamRecall": 49.4,
+    "accuracy": 98.7,
+    "scamRecall": 98.9,
+    "strictScamRecall": 56.2,
     "falseAlarmRate": 1.6,
-    "precision": 98.7,
+    "precision": 98.9,
     "groundingRate": null,
     "fallbacks": 0,
     "errors": 0,
@@ -25,17 +25,17 @@
     "byLang": {
       "en": {
         "n": 121,
-        "scamRecall": 81.4,
+        "scamRecall": 98.6,
         "falseAlarmRate": 2
       },
       "pcm": {
         "n": 10,
-        "scamRecall": 85.7,
+        "scamRecall": 100,
         "falseAlarmRate": 0
       },
       "yo": {
         "n": 8,
-        "scamRecall": 80,
+        "scamRecall": 100,
         "falseAlarmRate": 0
       },
       "ha": {

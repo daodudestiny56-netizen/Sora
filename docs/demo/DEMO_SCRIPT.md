@@ -41,7 +41,7 @@ and both must be able to answer questions on any part.
 | Question | Answer |
 |---|---|
 | Why Gemma 4 and not N-ATLaS? | N-ATLaS's licence caps use at 1,000 monthly users without a commercial licence, it can't read images, and its own card rates Yorùbá its weakest language. Gemma 4 is Apache 2.0, reads screenshots, and runs on a laptop (E4B). |
-| Is the eval data real? | Synthetic, written from public scam warnings, with no personal data. We say so in the dataset card, and the rules numbers are optimistic because we tuned the rules once on it. |
+| Is the eval data real? | Synthetic, written from public scam warnings, with no personal data. We say so in the dataset card, and the rules numbers are optimistic because we tuned the rules twice on it. |
 | How do you stop hallucinations? | Grounding: every red flag must quote the message word for word or it is dropped. 100% of quotes were grounded on our eval. Rules also set a floor under the verdict. |
 | What about privacy? | Nothing is stored. Messages are processed in memory. The offline mode and local Gemma (Ollama) keep everything on the device. |
 | How would this reach real users? | WhatsApp needs a Meta-approved number, and USSD/SMS need a paid shortcode via Africa's Talking. A bank, telco or NGO sponsor is the realistic path. |

@@ -25,8 +25,21 @@ everything a scam is useless, so we measure false alarms as carefully as missed 
 ## Known limits
 - It is synthetic, small, and mostly English. It measures whether the pipeline catches known patterns,
   not how it performs on the full variety of real-world scams.
-- The rules engine was revised once after looking at its misses on this set, so **rules-only numbers
+- The rules engine was revised twice after looking at its misses on this set, so **rules-only numbers
   are optimistic**. Model prompts were not tuned on it.
 - Contributions of real, anonymised messages are welcome. See `CONTRIBUTING.md`.
+
+## Held-out set (real messages)
+Put real, anonymised messages that people share with us (with their permission) in a separate file,
+for example `data/holdout.jsonl`, with the same fields as `eval.jsonl` (`id`, `label`, `scam_type`,
+`lang`, `source`, `text`). Never add them to `eval.jsonl`, and never tune a rule on them. Then run:
+
+```
+npm run eval -- --data data/holdout.jsonl                       # rules only
+npm run eval -- --backend gemini --data data/holdout.jsonl      # Gemma 4 + rules
+```
+
+A run on another file, or with `--limit`, writes its own file in `eval/results/` and leaves
+`summary.json` (the README table and the website) untouched.
 
 Licence: CC BY 4.0.
