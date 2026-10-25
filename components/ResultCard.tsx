@@ -148,7 +148,7 @@ export function ResultCard({ result, voiceAvailable }: { result: Analysis; voice
           <Seal verdict={result.verdict} />
           <div className="min-w-0">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-ink-soft">Verdict</p>
-            <h3 className={clsx("font-display text-3xl leading-tight tracking-tight sm:text-4xl", v.color)}>{v.label}</h3>
+            <h3 className={clsx("font-display text-3xl font-[620] leading-tight tracking-[-0.03em] sm:text-4xl", v.color)}>{v.label}</h3>
             <p className="mt-1 text-sm text-ink-soft">{v.sub}</p>
           </div>
         </div>
@@ -226,7 +226,7 @@ export function ResultCard({ result, voiceAvailable }: { result: Analysis; voice
                   transition={{ duration: 0.45, ease: EASE }}
                   lang={lang === "pcm" ? "pcm" : lang}
                 >
-                  <p className="font-display text-xl leading-snug text-ink">{exp.summary}</p>
+                  <p className="font-display text-xl font-[520] leading-snug tracking-[-0.01em] text-ink">{exp.summary}</p>
                   <ul className="mt-4 space-y-2">
                     {exp.actions.map((a, i) => (
                       <li key={i} className="flex gap-3 text-sm leading-relaxed text-ink-soft">

@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// "vietnamese" carries the dot-below vowels (ẹ, ọ) that Yorùbá and Igbo need.
-const fraunces = Fraunces({
+// One family for display and text. "vietnamese" carries the dot-below vowels (ẹ, ọ) that Yorùbá and
+// Igbo need; latin-ext carries ṣ, ɓ, ɗ, ƙ. The opsz axis tightens headlines and opens up small text.
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin", "latin-ext", "vietnamese"],
-  variable: "--font-fraunces",
-  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-bricolage",
+  axes: ["opsz", "wdth"],
   display: "swap",
 });
-const geist = Geist({ subsets: ["latin", "latin-ext"], variable: "--font-geist", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export const viewport: Viewport = { themeColor: "#f4eee3" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${geist.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${bricolage.variable} ${geistMono.variable}`}>
       <body className="grain min-h-[100dvh] overflow-x-clip">{children}</body>
     </html>
   );

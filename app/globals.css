@@ -17,8 +17,8 @@
   --color-forest: #2c6a4c;
   --color-forest-soft: #d5e6da;
 
-  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
   --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
@@ -48,7 +48,7 @@
   body {
     background: var(--color-paper);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    font-optical-sizing: auto;
   }
   ::selection {
     background: var(--color-indigo);

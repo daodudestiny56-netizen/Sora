@@ -28,9 +28,10 @@ export function Hero() {
             </span>
           </Reveal>
           <Reveal delay={0.08}>
-            <h1 className="mt-7 font-display text-[clamp(3rem,7.4vw,6.4rem)] font-[350] leading-[0.92] tracking-[-0.035em] text-ink [font-variation-settings:'SOFT'_50,'WONK'_0]">
+            <h1 className="mt-7 font-display text-[clamp(3rem,7.4vw,6.6rem)] font-[620] leading-[0.9] tracking-[-0.035em] text-ink [font-stretch:88%]">
               Before you send money,{" "}
-              <em className="font-[400] italic text-indigo [font-variation-settings:'SOFT'_100,'WONK'_1]">ṣọ́ra.</em>
+              <span className="text-indigo">ṣọ́ra</span>
+              <span className="text-vermilion">.</span>
             </h1>
           </Reveal>
           <Reveal delay={0.16}>
@@ -49,14 +50,14 @@ export function Hero() {
                 ["0", "messages stored"],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <dt className="font-display text-4xl tracking-tight text-ink">{n}</dt>
+                  <dt className="font-display text-4xl font-[580] tracking-tight text-ink">{n}</dt>
                   <dd className="mt-1 text-xs leading-snug text-muted">{l}</dd>
                 </div>
               ))}
             </dl>
           </Reveal>
-          <p className="mt-8 font-display text-sm italic text-muted">
-            <span className="not-italic">Ṣọ́ra</span> (Yorùbá): “be careful.”
+          <p className="mt-8 text-sm text-muted">
+            <span className="font-semibold text-ink">Ṣọ́ra</span> (Yorùbá): “be careful.”
           </p>
         </div>
         <Reveal delay={0.12}>
@@ -85,7 +86,7 @@ const PHRASES = [
 export function Marquee() {
   return (
     <div className="relative overflow-hidden border-y border-ink/8 bg-paper-2/60 py-5" aria-hidden>
-      <div className="flex w-max animate-marquee gap-10 whitespace-nowrap font-display text-2xl italic text-ink/35">
+      <div className="flex w-max animate-marquee gap-10 whitespace-nowrap font-display text-2xl font-[500] tracking-tight text-ink/30">
         {[...PHRASES, ...PHRASES].map((p, i) => (
           <span key={i} className="flex items-center gap-10">
             “{p}”<span className="h-1.5 w-1.5 rounded-full bg-vermilion/50" />
@@ -111,7 +112,7 @@ export function HowItWorks() {
     <section id="how" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-28 sm:px-8 md:py-40">
       <Reveal>
         <span className="eyebrow">How it works</span>
-        <h2 className="mt-6 max-w-3xl font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[350] leading-[1] tracking-[-0.03em]">
+        <h2 className="mt-6 max-w-3xl font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[600] leading-[0.98] tracking-[-0.04em]">
           Evidence, not vibes. Every red flag points at real words.
         </h2>
       </Reveal>
@@ -126,7 +127,7 @@ export function HowItWorks() {
                   <li key={t} className="group grid grid-cols-[3rem_1fr] gap-4 border-t border-ink/8 py-5 first:border-t-0">
                     <span className="font-mono text-xs text-muted">0{i + 1}</span>
                     <div>
-                      <p className="font-display text-2xl tracking-tight text-ink">{t}</p>
+                      <p className="font-display text-2xl font-[580] tracking-tight text-ink">{t}</p>
                       <p className="mt-1 text-sm leading-relaxed text-ink-soft">{d}</p>
                     </div>
                   </li>
@@ -160,7 +161,7 @@ export function HowItWorks() {
             <div className="bezel-dark-core flex h-full flex-col justify-between gap-10 p-7 text-paper">
               <Translate weight="light" size={24} className="text-paper/70" />
               <div>
-                <p className="font-display text-2xl tracking-tight">Five languages. Real voices.</p>
+                <p className="font-display text-2xl font-[580] tracking-tight">Five languages. Real voices.</p>
                 <p className="mt-2 text-sm leading-relaxed text-paper/65">
                   English, Pidgin, Yorùbá, Hausa and Igbo, with full tone marks. Voice notes come from YarnGPT2, an open
                   Nigerian-accent TTS model.
@@ -207,7 +208,7 @@ function Feature({
         <div className="bezel-core flex h-full flex-col justify-between gap-10 p-7">
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-ink/5 text-ink ring-1 ring-ink/8">{icon}</span>
           <div>
-            <p className="font-display text-2xl tracking-tight text-ink">{title}</p>
+            <p className="font-display text-2xl font-[580] tracking-tight text-ink">{title}</p>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">{body}</p>
           </div>
         </div>
@@ -227,8 +228,8 @@ export function Phones() {
             <span className="eyebrow !bg-paper/10 !text-paper/70 !shadow-[inset_0_0_0_1px_rgb(244_238_227/0.15)]">
               <Broadcast weight="light" size={12} /> For button phones
             </span>
-            <h2 className="mt-6 font-display text-[clamp(2.4rem,5vw,4.4rem)] font-[350] leading-[1] tracking-[-0.03em]">
-              No smartphone? <em className="italic text-[#e9b97a]">Dial it.</em>
+            <h2 className="mt-6 font-display text-[clamp(2.4rem,5vw,4.4rem)] font-[600] leading-[0.98] tracking-[-0.04em]">
+              No smartphone? <span className="text-[#e9b97a]">Dial it.</span>
             </h2>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/70">
               The people scammers target most often use phones with buttons, not apps. Ṣọ́ra meets them there, on the same
@@ -244,7 +245,7 @@ export function Phones() {
             ].map(([t, d], i) => (
               <Reveal key={t} delay={0.06 * i}>
                 <div className="border-t border-paper/15 pt-5">
-                  <p className="font-display text-xl tracking-tight">{t}</p>
+                  <p className="font-display text-xl font-[580] tracking-tight">{t}</p>
                   <p className="mt-2 text-sm leading-relaxed text-paper/60">{d}</p>
                 </div>
               </Reveal>
@@ -288,7 +289,7 @@ export function Evaluation() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
         <Reveal>
           <span className="eyebrow">Evaluation</span>
-          <h2 className="mt-6 font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[350] leading-[1] tracking-[-0.03em]">
+          <h2 className="mt-6 font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[600] leading-[0.98] tracking-[-0.04em]">
             Measured, not promised.
           </h2>
           <p className="mt-6 max-w-md leading-relaxed text-ink-soft">
@@ -362,7 +363,7 @@ export function Evaluation() {
 function Stat({ value, label, tone }: { value: number | null; label: string; tone?: "forest" }) {
   return (
     <div>
-      <p className={`font-display text-5xl tracking-tight ${tone === "forest" ? "text-forest" : "text-ink"}`}>
+      <p className={`font-display text-5xl font-[580] tracking-tight ${tone === "forest" ? "text-forest" : "text-ink"}`}>
         {value ?? "—"}
         <span className="text-2xl text-muted">%</span>
       </p>
@@ -394,7 +395,7 @@ export function OpenSource() {
       <div className="mx-auto max-w-7xl px-4 py-28 sm:px-8 md:py-40">
         <Reveal>
           <span className="eyebrow">Open by design</span>
-          <h2 className="mt-6 max-w-3xl font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[350] leading-[1] tracking-[-0.03em]">
+          <h2 className="mt-6 max-w-3xl font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[600] leading-[0.98] tracking-[-0.04em]">
             Open weights, open licence, open data.
           </h2>
         </Reveal>
@@ -412,7 +413,7 @@ export function OpenSource() {
                       {m.licence}
                     </span>
                   </div>
-                  <p className="mt-8 font-display text-3xl tracking-tight">{m.name}</p>
+                  <p className="mt-8 font-display text-3xl font-[580] tracking-tight">{m.name}</p>
                   <p className="mt-2 text-ink-soft">{m.role}</p>
                   <p className="mt-4 text-sm text-muted">{m.note}</p>
                 </div>
@@ -450,7 +451,7 @@ export function Footer() {
   return (
     <footer className="bg-ink text-paper">
       <div className="mx-auto max-w-7xl px-4 pb-10 pt-24 sm:px-8">
-        <p className="font-display text-[clamp(4rem,16vw,13rem)] font-[300] leading-[0.8] tracking-[-0.05em] text-paper/90">
+        <p className="font-display text-[clamp(4rem,16vw,13rem)] font-[680] leading-[0.82] tracking-[-0.06em] [font-stretch:85%] text-paper/90">
           Ṣọ́ra<span className="text-vermilion">.</span>
         </p>
         <div className="mt-14 grid gap-8 border-t border-paper/10 pt-8 text-sm text-paper/55 md:grid-cols-3">

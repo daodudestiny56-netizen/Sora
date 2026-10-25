@@ -26,7 +26,7 @@ export function Nav() {
     <>
       <header className="fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-4 sm:pt-6">
         <nav className="flex w-full max-w-max items-center gap-1 rounded-full bg-paper/70 p-1.5 pl-5 shadow-[0_8px_32px_-12px_rgba(20,26,46,0.25)] ring-1 ring-ink/8 backdrop-blur-xl">
-          <a href="#top" className="mr-3 font-display text-xl tracking-tight text-ink" aria-label="Ṣọ́ra home">
+          <a href="#top" className="mr-3 font-display text-xl font-[580] tracking-tight text-ink" aria-label="Ṣọ́ra home">
             Ṣọ́ra
           </a>
           <div className="hidden items-center md:flex">
@@ -86,7 +86,7 @@ export function Nav() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 24, opacity: 0 }}
                     transition={{ duration: 0.7, ease: EASE, delay: 0.08 + i * 0.05 }}
-                    className="block font-display text-5xl tracking-tight text-ink"
+                    className="block font-display text-5xl font-[580] tracking-tight text-ink"
                   >
                     {label}
                   </motion.a>
