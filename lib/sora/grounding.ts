@@ -13,7 +13,7 @@ const fold = (s: string) =>
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const tokens = (s: string) => fold(s).match(/[\p{L}\p{N}]+/gu) ?? [];
+const tokens = (s: string): string[] => fold(s).match(/[\p{L}\p{N}]+/gu) ?? [];
 
 /** Find the quote in the text, tolerating case, accents, whitespace and punctuation differences. */
 export function locateQuote(text: string, quote: string): Span | null {
