@@ -11,6 +11,7 @@ export const REPO_URL = "https://github.com/daodudestiny56-netizen/Sora";
 const LINKS = [
   ["Check", "#check"],
   ["How it works", "#how"],
+  ["Practice", "#practice"],
   ["Button phones", "#phones"],
   ["Evaluation", "#eval"],
   ["Open source", "#open"],

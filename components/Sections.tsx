@@ -12,6 +12,7 @@ import {
 import summaryJson from "@/eval/results/summary.json";
 import { Checker } from "./Checker";
 import { FeaturePhone } from "./FeaturePhone";
+import { Quiz } from "./Quiz";
 import { REPO_URL } from "./Nav";
 import { PillButton, Reveal } from "./ui";
 
@@ -214,6 +215,30 @@ function Feature({
         </div>
       </div>
     </Reveal>
+  );
+}
+
+/* -------------------------------------------------------------- practice */
+
+export function Practice() {
+  return (
+    <section id="practice" className="scroll-mt-24 bg-paper-2/60">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-28 sm:px-8 md:py-40 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+        <Reveal>
+          <span className="eyebrow">Practice</span>
+          <h2 className="mt-6 font-display text-[clamp(2.4rem,5vw,4.2rem)] font-[600] leading-[0.98] tracking-[-0.04em]">
+            The best check happens before the scam arrives.
+          </h2>
+          <p className="mt-6 max-w-md leading-relaxed text-ink-soft">
+            A one-minute game in five languages. Each answer shows the exact words that give a scam away, using the same rules
+            as the checker. Play it with your parents, then send them the challenge.
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <Quiz />
+        </Reveal>
+      </div>
+    </section>
   );
 }
 
