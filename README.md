@@ -71,7 +71,9 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
 | **Five languages** | English, Pidgin, Yorùbá, Hausa and Igbo, with full tone marks on the web. |
 | **Screenshots** | Gemma 4 reads text from screenshots (sender ID, links, amounts). Without a model, or if the model fails, Tesseract.js reads them **on the device**, so the image never leaves the phone. |
 | **Voice notes** | YarnGPT2 Nigerian-accent TTS. Download or share. |
+| **WhatsApp bot** | Forward a suspicious message or screenshot to the Ṣọ́ra WhatsApp number and get the verdict, steps and red flags back in your language, plus a voice note. Built on Twilio ([guide](docs/WHATSAPP.md)). |
 | **Share to WhatsApp** | One tap sends the explanation to family. |
+| **Practice game** | “Scam or real?”: eight messages in five languages. Each answer highlights the giveaway words using the same rules as the checker. Ends with a WhatsApp challenge for family. |
 | **Button phones** | USSD menu and SMS forwarding, same engine, replies sized for 2G screens. |
 | **Installable app (PWA)** | Add to home screen. **Share a suspicious SMS straight into Ṣọ́ra** from Android's share sheet. Works **offline**: the rules and reviewed explanations run on the phone. |
 | **Works without the model** | If the model is unreachable, deterministic rules and hand-written translations still answer. |
@@ -177,7 +179,7 @@ npm run dev                 # http://localhost:3000
 
 **Tests and checks**
 ```bash
-npm test            # rules, grounding, merge, OCR cleanup, offline check, USSD/SMS (25 tests)
+npm test            # rules, grounding, merge, OCR, offline, game, USSD/SMS/WhatsApp (33 tests)
 npm run typecheck
 npm run lint
 npm run build
@@ -261,6 +263,7 @@ paid and provisioned through telcos), and the callback URLs set in their dashboa
 | Reasoning model | **Gemini API** (hosted Gemma 4) | Free tier, rate-limited. Or self-host Gemma 4 with vLLM/Ollama and set `SORA_BACKEND=openai`. |
 | Voice model | **Hugging Face Docker Space** | [`services/voice`](services/voice). Set `VOICE_SERVICE_URL` and `VOICE_SERVICE_TOKEN`. |
 | Phone channels | **Africa's Talking** | Point the USSD and SMS callbacks at the Vercel URLs. |
+| WhatsApp bot | **Twilio** (free sandbox) | Point the sandbox webhook at `/api/channels/whatsapp`. See [`docs/WHATSAPP.md`](docs/WHATSAPP.md). |
 
 Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
@@ -282,7 +285,7 @@ Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## 12. Project structure
 ```
-app/                  Next.js pages, API routes (analyze, voice, channels/ussd, channels/sms, health), web manifest, icons
+app/                  Next.js pages, API routes (analyze, voice, channels/ussd|sms|whatsapp, health), web manifest, icons
 public/sw.js          service worker (offline shell, OCR cache; never caches messages)
 components/           UI: Checker, ResultCard, FeaturePhone simulator, landing sections
 lib/sora/             The engine
@@ -294,6 +297,8 @@ lib/sora/             The engine
   templates.ts        reviewed explanations in 5 languages (fallback + phones)
   channels.ts         USSD menu, SMS replies, GSM-7 folding
   local.ts            offline, in-browser check (rules + templates)
+  whatsapp.ts         Twilio WhatsApp: signature check, reply format, media, signed voice links
+lib/quiz.ts           "Scam or real?" practice game data in five languages
 data/eval.jsonl       150-message eval set + dataset card
 scripts/eval.ts       evaluation script
 eval/results/         recorded results
@@ -311,6 +316,7 @@ text, new **anonymised scam examples**, and new rules. See [CONTRIBUTING.md](CON
 - **YarnGPT2** by Saheed Azeez, Apache 2.0. Uses **WavTokenizer** (novateur) weights.
 - **N-ATLaS** (NCAIR / Awarri) and **Qwen**: considered and documented as comparison models.
 - **Africa's Talking**: USSD and SMS callback format.
+- **Twilio** WhatsApp API (sandbox) for the WhatsApp bot.
 - Libraries: Next.js, React, Tailwind CSS, Motion, Phosphor Icons, Zod, Vitest, tsx, FastAPI, PyTorch,
   Hugging Face transformers. **Tesseract.js** (Apache 2.0) for on-device OCR. Fonts: Bricolage Grotesque and Geist Mono (SIL Open Font License).
 - Scam patterns are drawn from public CBN and bank fraud advisories and Nigerian tech press. Sources
@@ -321,6 +327,6 @@ text, new **anonymised scam examples**, and new rules. See [CONTRIBUTING.md](CON
   direction. The team reviews, tests and is responsible for everything submitted.
 
 ## 15. Next steps
-A WhatsApp bot (WhatsApp Business API) · voice input so parents can speak the message (NCAIR Yorùbá
+An approved WhatsApp Business number · voice input so parents can speak the message (NCAIR Yorùbá
 ASR) · native-speaker evaluation · a community-reported scam feed · an offline Android app running
 Gemma 4 E2B on the device · a live USSD shortcode with a telco partner.
