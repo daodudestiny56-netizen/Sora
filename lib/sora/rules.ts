@@ -72,6 +72,13 @@ const RULES: Rule[] = [
     accept: notNegated,
   },
   {
+    // Yorùbá ("fi ... ránṣẹ́"), Hausa ("turo/aiko"), Igbo ("zitere/ziga/nye") requests for a secret.
+    category: "credential_request",
+    severity: "high",
+    reason: "Asks for a PIN, OTP, BVN or secret code. Banks never ask for these by text or chat.",
+    pattern: /(?:\b(?:otp|bvn|pin|password)\b|kóòdù|lambar sirri)[^.!?\n]{0,50}(?:ránṣẹ́|ransẹ|ranṣẹ)|\b(?:turo|aiko|aika|zitere|ziga|nye)\b[^.!?\n]{0,40}(?:\b(?:otp|bvn|pin|password)\b|lambar sirri)/gi,
+  },
+  {
     category: "credential_request",
     severity: "high",
     reason: "Asks you to send back a code you just received. That code is the key to your account.",
@@ -144,7 +151,13 @@ const RULES: Rule[] = [
     category: "advance_fee",
     severity: "high",
     reason: "Asks you to pay a fee before you receive money. Real grants, loans and prizes don't do this.",
-    pattern: /\b(?:pay|send|transfer)\b[^.!?\n]{0,40}\b(?:processing|registration|activation|delivery|clearance|release|verification|admin(?:istrative)?|form|insurance|tax|logistics|unlocking)\s+(?:fee|charge|levy)\b|\b(?:processing|registration|activation|clearance|release|unlocking) fee\b/gi,
+    pattern: /\b(?:pay|send|transfer)\b[^.!?\n]{0,40}\b(?:processing|registration|activation|delivery|clearance|release|verification|admin(?:istrative)?|form|insurance|tax|logistics|unlocking|customs|upgrade|documentation)\s+(?:fee|charge|levy)\b|\b(?:processing|registration|activation|clearance|release|unlocking|upgrade) fee\b/gi,
+  },
+  {
+    category: "advance_fee",
+    severity: "high",
+    reason: "Asks you to pay first so you can claim, receive or unlock something.",
+    pattern: /\b(?:pay|send|deposit(?:ing)?)\b[^.!?\n]{0,40}\bto (?:claim|receive|release|unlock|start|get your|activate|redeem)\b|\bkuɗin rajista\b|owó ìforúkọsílẹ̀|ụgwọ ndebanye aha/gi,
   },
   {
     category: "too_good_to_be_true",
