@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ImageSquare, TextAlignLeft, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import type { Analysis } from "@/lib/sora/types";
+import { readTextOnDevice } from "@/lib/ocr";
 import { SAMPLES } from "@/lib/samples";
 import { EASE } from "./ui";
 import { ResultCard } from "./ResultCard";
@@ -31,6 +32,7 @@ export function Checker() {
   const [text, setText] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Analysis | null>(null);
   const [health, setHealth] = useState<Health | null>(null);
@@ -46,19 +48,53 @@ export function Checker() {
 
   const modelLive = health?.backend && health.backend !== "rules";
 
+  async function post(body: object) {
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json();
+    if (!res.ok) throw Object.assign(new Error(json.error ?? "Something went wrong."), { status: res.status });
+    return json as Analysis;
+  }
+
+  /** Read the screenshot in the browser, show the text so it can be corrected, then check it. */
+  async function checkOnDevice(img: string) {
+    setOcrProgress(0);
+    try {
+      const extracted = await readTextOnDevice(img, setOcrProgress);
+      if (!extracted) throw new Error("No readable text found in that screenshot. Try pasting the text instead.");
+      const combined = [text.trim(), extracted].filter(Boolean).join("\n\n");
+      setText(combined);
+      return await post({ text: combined });
+    } finally {
+      setOcrProgress(null);
+    }
+  }
+
   async function check() {
     setError(null);
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("/api/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mode === "image" && image ? { image, text: text || undefined } : { text }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong.");
-      setResult(json);
+      let analysis: Analysis;
+      if (mode === "image" && image) {
+        if (modelLive) {
+          try {
+            analysis = await post({ image, text: text || undefined });
+          } catch (e) {
+            // Model couldn't read it (rate limit, timeout, outage): fall back to on-device OCR.
+            if ((e as { status?: number }).status === 400) throw e;
+            analysis = await checkOnDevice(image);
+          }
+        } else {
+          analysis = await checkOnDevice(image);
+        }
+      } else {
+        analysis = await post({ text });
+      }
+      setResult(analysis);
       requestAnimationFrame(() =>
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: window.innerWidth < 1024 ? "start" : "nearest" }),
       );
@@ -170,11 +206,24 @@ export function Checker() {
                   >
                     <ImageSquare weight="light" size={28} />
                     Drop a screenshot or tap to choose
-                    <span className="text-xs text-muted">Gemma 4 reads the text for you</span>
+                    <span className="text-xs text-muted">
+                      {modelLive ? "Gemma 4 reads the text for you" : "Read privately on your device"}
+                    </span>
                   </button>
                 )}
-                {!modelLive && health && (
-                  <p className="mt-2 text-xs text-ochre">Reading screenshots needs the model, which isn&apos;t connected right now. Paste the text instead.</p>
+                {ocrProgress !== null && (
+                  <div className="mt-3" role="status" aria-live="polite">
+                    <div className="h-1 overflow-hidden rounded-full bg-ink/8">
+                      <motion.div
+                        className="h-full origin-left rounded-full bg-indigo"
+                        animate={{ scaleX: Math.max(0.04, ocrProgress) }}
+                        transition={{ duration: 0.4, ease: EASE }}
+                      />
+                    </div>
+                    <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted">
+                      Reading screenshot on your device · {Math.round(ocrProgress * 100)}%
+                    </p>
+                  </div>
                 )}
               </motion.div>
             )}
@@ -202,7 +251,7 @@ export function Checker() {
               disabled={!canSubmit}
               className="group inline-flex shrink-0 items-center justify-between gap-3 self-end rounded-full bg-ink py-2 pl-6 pr-2 text-sm font-medium text-paper transition-all duration-500 ease-[var(--ease-fluid)] hover:bg-indigo active:scale-[0.98] disabled:opacity-40"
             >
-              {loading ? "Checking…" : "Check message"}
+              {ocrProgress !== null ? "Reading…" : loading ? "Checking…" : "Check message"}
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-paper/12 transition-transform duration-500 ease-[var(--ease-fluid)] group-hover:translate-x-1 group-hover:scale-105">
                 {loading ? (
                   <span className="h-4 w-4 animate-spin rounded-full border border-paper/30 border-t-paper" />
@@ -222,7 +271,7 @@ export function Checker() {
       )}
 
       <div ref={resultRef} className="scroll-mt-28">
-        {loading && <ResultSkeleton />}
+        {loading && ocrProgress === null && <ResultSkeleton />}
         {result && <ResultCard key={result.text + result.engine.latencyMs} result={result} voiceAvailable={!!health?.voice} />}
       </div>
     </div>
