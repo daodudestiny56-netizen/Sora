@@ -48,6 +48,8 @@ _cache: "OrderedDict[str, bytes]" = OrderedDict()
 class TTSRequest(BaseModel):
     text: str = Field(min_length=1, max_length=600)
     lang: str = Field(pattern="^(en|pcm|yo|ha|ig)$")
+    # WhatsApp needs a compressed format; the web player uses WAV.
+    format: str = Field(default="wav", pattern="^(wav|mp3)$")
 
 
 def check_token(authorization: str = Header(default="")) -> None:
@@ -70,7 +72,7 @@ def sentences(text: str, max_len: int = 220) -> list[str]:
 
 
 @torch.inference_mode()
-def synthesize(text: str, lang: str) -> bytes:
+def synthesize(text: str, lang: str, fmt: str = "wav") -> bytes:
     language, speaker = VOICES[lang]
     clips = []
     for s in sentences(text):
@@ -81,7 +83,7 @@ def synthesize(text: str, lang: str) -> bytes:
         clips.append(torch.zeros(1, 24000 // 4))  # short pause between sentences
     audio = torch.cat([c.reshape(1, -1).cpu() for c in clips], dim=1)
     buf = io.BytesIO()
-    torchaudio.save(buf, audio, sample_rate=24000, format="wav")
+    torchaudio.save(buf, audio, sample_rate=24000, format=fmt)  # mp3 uses the ffmpeg in the image
     return buf.getvalue()
 
 
@@ -92,10 +94,10 @@ def health():
 
 @app.post("/tts", dependencies=[Depends(check_token)])
 def tts(req: TTSRequest):
-    key = hashlib.sha256(f"{req.lang}:{req.text}".encode()).hexdigest()
+    key = hashlib.sha256(f"{req.lang}:{req.format}:{req.text}".encode()).hexdigest()
     if key not in _cache:
-        _cache[key] = synthesize(req.text, req.lang)
+        _cache[key] = synthesize(req.text, req.lang, req.format)
         if len(_cache) > 64:
             _cache.popitem(last=False)
     _cache.move_to_end(key)
-    return Response(_cache[key], media_type="audio/wav")
+    return Response(_cache[key], media_type="audio/mpeg" if req.format == "mp3" else "audio/wav")
