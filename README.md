@@ -73,6 +73,7 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
 | **Voice notes** | YarnGPT2 Nigerian-accent TTS. Download or share. |
 | **Share to WhatsApp** | One tap sends the explanation to family. |
 | **Button phones** | USSD menu and SMS forwarding, same engine, replies sized for 2G screens. |
+| **Installable app (PWA)** | Add to home screen. **Share a suspicious SMS straight into Ṣọ́ra** from Android's share sheet. Works **offline**: the rules and reviewed explanations run on the phone. |
 | **Works without the model** | If the model is unreachable, deterministic rules and hand-written translations still answer. |
 
 ## 5. Model information
@@ -144,6 +145,12 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
   Only the TTS model, which needs PyTorch, runs elsewhere.
 - **Swappable model backend.** `SORA_BACKEND=gemini|openai|rules`. The `openai` backend talks to any
   OpenAI-compatible server (Ollama, vLLM, llama.cpp, LM Studio).
+- **Progressive Web App.** A web manifest with a `share_target` (Android: long-press an SMS → Share →
+  Ṣọ́ra) and a hand-written service worker ([`public/sw.js`](public/sw.js)). The app shell, icons and the
+  Tesseract OCR engine are cached so the app opens and checks messages with no data. Offline checks
+  run the same rules and templates in the browser ([`lib/sora/local.ts`](lib/sora/local.ts)). `/api/*` is
+  never cached, so checked messages are not stored on the device. An app store would add friction and
+  cost for a 5-day prototype; a PWA installs from the link.
 - **Privacy.** Messages are processed in memory, never stored or logged.
 
 **Dependencies:** Next.js 16, React 19, TypeScript 5.9, Tailwind CSS 4, Motion, Phosphor Icons, Zod
@@ -170,7 +177,7 @@ npm run dev                 # http://localhost:3000
 
 **Tests and checks**
 ```bash
-npm test            # rules, grounding, merge, OCR cleanup, USSD/SMS (24 tests)
+npm test            # rules, grounding, merge, OCR cleanup, offline check, USSD/SMS (25 tests)
 npm run typecheck
 npm run lint
 npm run build
@@ -275,7 +282,8 @@ Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ## 12. Project structure
 ```
-app/                  Next.js pages and API routes (analyze, voice, channels/ussd, channels/sms, health)
+app/                  Next.js pages, API routes (analyze, voice, channels/ussd, channels/sms, health), web manifest, icons
+public/sw.js          service worker (offline shell, OCR cache; never caches messages)
 components/           UI: Checker, ResultCard, FeaturePhone simulator, landing sections
 lib/sora/             The engine
   rules.ts            deterministic red-flag rules with exact spans
@@ -285,6 +293,7 @@ lib/sora/             The engine
   analyze.ts          pipeline: OCR → rules → model → grounding → merge
   templates.ts        reviewed explanations in 5 languages (fallback + phones)
   channels.ts         USSD menu, SMS replies, GSM-7 folding
+  local.ts            offline, in-browser check (rules + templates)
 data/eval.jsonl       150-message eval set + dataset card
 scripts/eval.ts       evaluation script
 eval/results/         recorded results
