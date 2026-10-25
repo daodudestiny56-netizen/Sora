@@ -310,7 +310,11 @@ export function ResultCard({ result, voiceAvailable }: { result: Analysis; voice
             <span>{result.engine.model ? `Gemma 4 · ${result.engine.model}` : "Rules engine only"}</span>
             <span>{(result.engine.latencyMs / 1000).toFixed(1)} s</span>
             {result.engine.droppedFlags > 0 && <span>{result.engine.droppedFlags} unquotable claim(s) dropped</span>}
-            {result.engine.fallbackReason && <span title={result.engine.fallbackReason}>Model unavailable: used rules</span>}
+            {result.engine.fallbackReason === "offline" ? (
+              <span>Offline check on this device</span>
+            ) : (
+              result.engine.fallbackReason && <span title={result.engine.fallbackReason}>Model unavailable: used rules</span>
+            )}
             <span>Not stored</span>
           </footer>
         </div>

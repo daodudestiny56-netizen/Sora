@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ImageSquare, TextAlignLeft, X } from "@phosphor-icons/react";
 import clsx from "clsx";
 import type { Analysis } from "@/lib/sora/types";
+import { analyzeLocally } from "@/lib/sora/local";
 import { readTextOnDevice } from "@/lib/ocr";
 import { SAMPLES } from "@/lib/samples";
 import { EASE } from "./ui";
@@ -46,14 +47,35 @@ export function Checker() {
       .catch(() => setHealth(null));
   }, []);
 
+  // Opened from Android's share sheet (manifest share_target): check the shared text straight away.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const shared = [...new Set(["title", "text", "url"].map((k) => q.get(k)?.trim()).filter(Boolean))].join("\n");
+    if (!shared) return;
+    window.history.replaceState(null, "", window.location.pathname + "#check");
+    // The URL only exists in the browser, so this one-off sync from it has to happen after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setText(shared);
+    check(shared);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const modelLive = health?.backend && health.backend !== "rules";
 
-  async function post(body: object) {
-    const res = await fetch("/api/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+  async function post(body: { text?: string; image?: string }) {
+    // No connection: run the rules and reviewed templates on this device instead.
+    if (!navigator.onLine && body.text) return analyzeLocally(body.text);
+    let res: Response;
+    try {
+      res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch {
+      if (body.text) return analyzeLocally(body.text);
+      throw new Error("You're offline. Paste the text and Ṣọ́ra will check it on this device.");
+    }
     const json = await res.json();
     if (!res.ok) throw Object.assign(new Error(json.error ?? "Something went wrong."), { status: res.status });
     return json as Analysis;
@@ -73,13 +95,14 @@ export function Checker() {
     }
   }
 
-  async function check() {
+  async function check(override?: string) {
+    const message = override ?? text;
     setError(null);
     setLoading(true);
     setResult(null);
     try {
       let analysis: Analysis;
-      if (mode === "image" && image) {
+      if (override === undefined && mode === "image" && image) {
         if (modelLive) {
           try {
             analysis = await post({ image, text: text || undefined });
@@ -92,7 +115,7 @@ export function Checker() {
           analysis = await checkOnDevice(image);
         }
       } else {
-        analysis = await post({ text });
+        analysis = await post({ text: message });
       }
       setResult(analysis);
       requestAnimationFrame(() =>
@@ -247,7 +270,7 @@ export function Checker() {
               ))}
             </div>
             <button
-              onClick={check}
+              onClick={() => check()}
               disabled={!canSubmit}
               className="group inline-flex shrink-0 items-center justify-between gap-3 self-end rounded-full bg-ink py-2 pl-6 pr-2 text-sm font-medium text-paper transition-all duration-500 ease-[var(--ease-fluid)] hover:bg-indigo active:scale-[0.98] disabled:opacity-40"
             >
