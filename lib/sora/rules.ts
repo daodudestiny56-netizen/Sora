@@ -48,6 +48,7 @@ const OFFICIAL_DOMAINS = [
   "sterling.ng",
   "jumia.com.ng",
   "gigl.com.ng",
+  "dhl.com",
 ];
 
 const SHORTENERS =
@@ -101,7 +102,10 @@ const RULES: Rule[] = [
       const host = m[1].toLowerCase();
       if (isOfficialHost(host) || SHORTENERS.test(host)) return false;
       // Only flag look-alike hosts that borrow a bank/agency/"verify" word; plain links are left to the model.
-      return new RegExp(`${BANKS}|bvn|verify|verification|update|secure|alert|grant|empowerment|reward|promo|login`, "i").test(host);
+      return new RegExp(
+        `${BANKS}|bvn|verify|verification|update|secure|alert|grant|empowerment|reward|promo|login|dhl|fedex|redeliver|parcel|delivery|nsip|registration|payout`,
+        "i",
+      ).test(host);
     },
   },
 
@@ -184,6 +188,98 @@ const RULES: Rule[] = [
     severity: "low",
     reason: "Pushes you to call or WhatsApp a private number instead of your bank's official line.",
     pattern: /\b(?:call|whatsapp|chat with|contact|text)\b[^.!?\n]{0,25}\b(?:our )?(?:agent|officer|manager|customer care|support|admin|this number|on)\b[^.!?\n]{0,12}(?:\+?234|0)[789][01]\d[ -]?\d{3,4}[ -]?\d{3,4}/gi,
+  },
+
+  // --- gaps found in the eval misses: fake fines, job/delivery fees, code read-outs, family emergencies ---
+  {
+    category: "advance_fee",
+    severity: "high",
+    reason: "Asks you to pay a \"fine\" or \"bail\" to avoid arrest. Real agencies never collect fines by text or transfer.",
+    pattern: /\b(?:pay|send|transfer)\b[^.!?\n]{0,40}\b(?:fine|bail|penalty)\b[^.!?\n]{0,40}\b(?:or you (?:will|go) (?:be )?(?:arrest\w*|jail\w*|prosecut\w*)|(?:avoid|stop|prevent)\b[^.!?\n]{0,15}\b(?:arrest|prosecution|jail))/gi,
+  },
+  {
+    category: "advance_fee",
+    severity: "medium",
+    reason: "Asks for a form, training, update or delivery fee. Real jobs, utilities and couriers don't charge these by text.",
+    pattern: /\b(?:registration|application|interview|training|uniform|medical|document(?:ation)?|meter update|re-?delivery|form|sorting)(?: (?:form|materials?|kit|update))? (?:fee|charge|levy)s?\b/gi,
+    // Skip receipts ("your application fee has been received") and "there is no form fee".
+    accept: (text, m) => notNegated(text, m) && !/\b(?:received|confirmed|receipt|successful(?:ly)?)\b/i.test(text),
+  },
+  {
+    category: "advance_fee",
+    severity: "medium",
+    reason: "Tells you to pay a person (an \"officer\", \"agent\" or private number) instead of an official account.",
+    pattern: /\bpay\b[^.!?\n]{0,50}\bto (?:the |our |my )?(?:(?:hr|hiring|recruitment|clearing|delivery|dispatch|account|admin) )?(?:officer|agent|manager|staff)(?:'s)?\b[^.!?\n]{0,15}(?:\baccount\b|\b0[789][01]\d)/gi,
+  },
+  {
+    category: "advance_fee",
+    severity: "medium",
+    reason: "A courier asking for money before delivering is a red flag. Real riders don't ask for fuel money to a personal account.",
+    pattern: /\b(?:need|send|pay|give me)\b[^.!?\n]{0,30}\bfor (?:fuel|petrol|transport|logistics)\b[^.!?\n]{0,40}\bbefore\b[^.!?\n]{0,15}\b(?:deliver|release|dispatch)\w*|\bbefore (?:i|we) can (?:deliver|release|dispatch)\b/gi,
+  },
+  {
+    category: "credential_request",
+    severity: "high",
+    reason: "Asks you to read out or send back a code you just received. That code is the key to your account.",
+    pattern: /\b(?:send|read(?: out)?|forward|share|tell|give|reply with)\b[^.!?\n]{0,25}\bcode\b[^.!?\n]{0,30}\b(?:you (?:just )?(?:received|got)|we (?:just )?sent|(?:just )?sent to (?:you|your))\b/gi,
+    accept: notNegated,
+  },
+  {
+    category: "new_number",
+    severity: "medium",
+    reason: "\"Lost my phone, use this number\" followed by a money request is the family-emergency scam.",
+    pattern: /\b(?:use this number(?: for now)?|my line (?:is )?not (?:going|working|connecting)|(?:i )?lost my phone|my phone (?:is )?(?:not working|spoilt|spoiled|damaged))\b/gi,
+    // Only when the same message also asks for money, so a plain "I lost my phone" text is left alone.
+    accept: (text) => /\b(?:send|pay|transfer|borrow|help me|account number)\b|[₦$]\s?\d|\bn\s?\d[\d,]{2,}|\b\d{1,3}k\b/i.test(text),
+  },
+  {
+    category: "secrecy_pressure",
+    severity: "medium",
+    reason: "Tells you not to call anyone to check. Scammers want you to act before someone can warn you.",
+    pattern: /\bno call me\b|\b(?:do not|don'?t) call (?:the )?(?:school|bank|police|hospital|anyone|anybody)\b/gi,
+  },
+  {
+    category: "secrecy_pressure",
+    severity: "low",
+    reason: "\"I'll explain later\" is how scammers avoid questions while asking for money.",
+    pattern: /\bi(?:'ll| will| go) explain (?:everything )?later\b/gi,
+  },
+  {
+    category: "urgency_threat",
+    severity: "medium",
+    reason: "Says a relative is in an accident, hospital or police custody and demands money now.",
+    pattern: /\b(?:was|is|has been|got) (?:involved in an? accident|kidnapp?ed|detained|in police custody)\b[\s\S]{0,80}?\b(?:send|pay|transfer)\b[^.!?\n]{0,25}(?:₦|n(?:gn)?\s?)?\d/gi,
+  },
+  {
+    category: "urgency_threat",
+    severity: "medium",
+    reason: "Demands a transfer to an account right now, which is how you are rushed into paying.",
+    pattern: /\b(?:send|transfer|pay)\b\s+(?:₦|n(?:gn)?\s?)?\d[\d,.]*k?\s+to (?:this|the following|my) (?:account|number|opay|palmpay|moniepoint)\b[^.!?\n]{0,20}\b(?:immediately|urgent(?:ly)?|now|today|asap)\b/gi,
+  },
+  {
+    category: "urgency_threat",
+    severity: "medium",
+    reason: "Asks for a quick transfer in a hurry, usually from someone claiming to be a relative or friend.",
+    pattern: /\bsend\b[^.!?\n]{0,10}\b\d{1,3}k\b[^.!?\n]{0,20}\b(?:urgent(?:ly)?|now|sharp sharp|immediately|asap)\b/gi,
+  },
+  {
+    category: "too_good_to_be_true",
+    severity: "medium",
+    reason: "Promises quick money from a \"platform\" and pushes you to register and deposit. This is how investment scams start.",
+    pattern: /\b(?:i|we) (?:just )?(?:made|earned|got) (?:over )?(?:₦|n(?:gn)?\s?)?\d[\d,.]*\s?(?:k|m|million)?\b[^.!?\n]{0,40}\b(?:this platform|in (?:one|a|\d+) (?:day|week|month)s?)\b|\b(?:they|it) pays? every (?:friday|monday|day|week)\b|\buse my (?:link|code)\b[^.!?\n]{0,30}\b(?:register|deposit|invest|join)\b/gi,
+  },
+  {
+    category: "too_good_to_be_true",
+    severity: "medium",
+    reason: "Promises free monthly money for filling in your details. Real government schemes don't recruit by text.",
+    pattern: /\bget (?:₦|n(?:gn)?\s?)?\d[\d,]*\s+free\b|\bfree monthly\b/gi,
+  },
+  {
+    // Yorùbá: "àṣìṣe ni mo ... ránṣẹ́" (I sent it by mistake) and "dá a padà" (give it back). Needs native-speaker review.
+    category: "fake_credit_alert",
+    severity: "high",
+    reason: "Says money was sent \"by mistake\" and asks you to return it. Fake alerts are made to look exactly like real ones.",
+    pattern: /àṣìṣe ni mo[^.!?\n]{0,40}ránṣẹ́|ẹ dá a padà|dá (?:owó|owo) (?:náà )?padà/gi,
   },
 ];
 
