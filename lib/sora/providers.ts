@@ -60,6 +60,11 @@ function gemini(apiKey: string, model: string): Provider {
       let res = await call(req, true);
       // Not every model accepts thinkingConfig; retry once without it.
       if (res.status === 400) res = await call(req, false);
+      // The hosted API returns occasional transient 500/503s; two quick retries recover almost all of them.
+      for (let attempt = 1; attempt <= 2 && (res.status === 500 || res.status === 503); attempt++) {
+        await new Promise((r) => setTimeout(r, 600 * attempt));
+        res = await call(req, true);
+      }
       if (!res.ok) throw new ProviderError(`Gemini API ${res.status}: ${(await res.text()).slice(0, 300)}`, res.status);
       const json = (await res.json()) as {
         candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
