@@ -49,5 +49,56 @@
         "falseAlarmRate": 0
       }
     }
+  },
+  "gemini:gemma-4-26b-a4b-it": {
+    "run": "gemini:gemma-4-26b-a4b-it",
+    "backend": "gemini",
+    "model": "gemma-4-26b-a4b-it",
+    "date": "2026-10-25",
+    "dataset": {
+      "path": "data/eval.jsonl",
+      "n": 150,
+      "scam": 89,
+      "legit": 61
+    },
+    "accuracy": 98.7,
+    "scamRecall": 98.9,
+    "strictScamRecall": 95.5,
+    "falseAlarmRate": 1.6,
+    "precision": 98.9,
+    "groundingRate": 100,
+    "fallbacks": 6,
+    "errors": 0,
+    "latencyMs": {
+      "p50": 6622,
+      "p95": 8700
+    },
+    "byLang": {
+      "en": {
+        "n": 121,
+        "scamRecall": 98.6,
+        "falseAlarmRate": 2
+      },
+      "pcm": {
+        "n": 10,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "yo": {
+        "n": 8,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "ha": {
+        "n": 6,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "ig": {
+        "n": 5,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      }
+    }
   }
 }

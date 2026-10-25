@@ -1,0 +1,1561 @@
+{
+  "summary": {
+    "run": "gemini:gemma-4-26b-a4b-it",
+    "backend": "gemini",
+    "model": "gemma-4-26b-a4b-it",
+    "date": "2026-10-25",
+    "dataset": {
+      "path": "data/eval.jsonl",
+      "n": 150,
+      "scam": 89,
+      "legit": 61
+    },
+    "accuracy": 98.7,
+    "scamRecall": 98.9,
+    "strictScamRecall": 95.5,
+    "falseAlarmRate": 1.6,
+    "precision": 98.9,
+    "groundingRate": 100,
+    "fallbacks": 6,
+    "errors": 0,
+    "latencyMs": {
+      "p50": 6622,
+      "p95": 8700
+    },
+    "byLang": {
+      "en": {
+        "n": 121,
+        "scamRecall": 98.6,
+        "falseAlarmRate": 2
+      },
+      "pcm": {
+        "n": 10,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "yo": {
+        "n": 8,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "ha": {
+        "n": 6,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      },
+      "ig": {
+        "n": 5,
+        "scamRecall": 100,
+        "falseAlarmRate": 0
+      }
+    }
+  },
+  "rows": [
+    {
+      "id": "e001",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 8663
+    },
+    {
+      "id": "e002",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 8314
+    },
+    {
+      "id": "e003",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 8269
+    },
+    {
+      "id": "e004",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6968
+    },
+    {
+      "id": "e005",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8344
+    },
+    {
+      "id": "e006",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7120
+    },
+    {
+      "id": "e007",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6657
+    },
+    {
+      "id": "e008",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6550
+    },
+    {
+      "id": "e009",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 12259
+    },
+    {
+      "id": "e010",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7939
+    },
+    {
+      "id": "e011",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 5553
+    },
+    {
+      "id": "e012",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6872
+    },
+    {
+      "id": "e013",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8421
+    },
+    {
+      "id": "e014",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6543
+    },
+    {
+      "id": "e015",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 5116
+    },
+    {
+      "id": "e016",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6872
+    },
+    {
+      "id": "e017",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7053
+    },
+    {
+      "id": "e018",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7747
+    },
+    {
+      "id": "e019",
+      "label": "scam",
+      "lang": "yo",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7331
+    },
+    {
+      "id": "e020",
+      "label": "scam",
+      "lang": "ha",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6640
+    },
+    {
+      "id": "e021",
+      "label": "scam",
+      "lang": "ig",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6784
+    },
+    {
+      "id": "e022",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8857
+    },
+    {
+      "id": "e023",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 10145
+    },
+    {
+      "id": "e024",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7440
+    },
+    {
+      "id": "e025",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7003
+    },
+    {
+      "id": "e026",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7389
+    },
+    {
+      "id": "e027",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7215
+    },
+    {
+      "id": "e028",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6670
+    },
+    {
+      "id": "e029",
+      "label": "scam",
+      "lang": "yo",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 9393
+    },
+    {
+      "id": "e030",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7620
+    },
+    {
+      "id": "e031",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8190
+    },
+    {
+      "id": "e032",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7781
+    },
+    {
+      "id": "e033",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8148
+    },
+    {
+      "id": "e034",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8143
+    },
+    {
+      "id": "e035",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8684
+    },
+    {
+      "id": "e036",
+      "label": "scam",
+      "lang": "yo",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8586
+    },
+    {
+      "id": "e037",
+      "label": "scam",
+      "lang": "ha",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6943
+    },
+    {
+      "id": "e038",
+      "label": "scam",
+      "lang": "ig",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7307
+    },
+    {
+      "id": "e039",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 8700
+    },
+    {
+      "id": "e040",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6992
+    },
+    {
+      "id": "e041",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6626
+    },
+    {
+      "id": "e042",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7787
+    },
+    {
+      "id": "e043",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8259
+    },
+    {
+      "id": "e044",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6866
+    },
+    {
+      "id": "e045",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8280
+    },
+    {
+      "id": "e046",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6523
+    },
+    {
+      "id": "e047",
+      "label": "scam",
+      "lang": "yo",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7602
+    },
+    {
+      "id": "e048",
+      "label": "scam",
+      "lang": "ha",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6952
+    },
+    {
+      "id": "e049",
+      "label": "scam",
+      "lang": "ig",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7528
+    },
+    {
+      "id": "e050",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7138
+    },
+    {
+      "id": "e051",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6487
+    },
+    {
+      "id": "e052",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7746
+    },
+    {
+      "id": "e053",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7461
+    },
+    {
+      "id": "e054",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7577
+    },
+    {
+      "id": "e055",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8369
+    },
+    {
+      "id": "e056",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "suspicious",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4828
+    },
+    {
+      "id": "e057",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4404
+    },
+    {
+      "id": "e058",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4557
+    },
+    {
+      "id": "e059",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4518
+    },
+    {
+      "id": "e060",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4427
+    },
+    {
+      "id": "e061",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "suspicious",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "fallback": "Gemini API 500: {\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"Internal error encountered.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n",
+      "latencyMs": 4321
+    },
+    {
+      "id": "e062",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8718
+    },
+    {
+      "id": "e063",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7342
+    },
+    {
+      "id": "e064",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8029
+    },
+    {
+      "id": "e065",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6871
+    },
+    {
+      "id": "e066",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8203
+    },
+    {
+      "id": "e067",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 3,
+      "droppedFlags": 0,
+      "latencyMs": 7608
+    },
+    {
+      "id": "e068",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8240
+    },
+    {
+      "id": "e069",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 9283
+    },
+    {
+      "id": "e070",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6978
+    },
+    {
+      "id": "e071",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7282
+    },
+    {
+      "id": "e072",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6822
+    },
+    {
+      "id": "e073",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8259
+    },
+    {
+      "id": "e074",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6622
+    },
+    {
+      "id": "e075",
+      "label": "scam",
+      "lang": "pcm",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7980
+    },
+    {
+      "id": "e076",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7035
+    },
+    {
+      "id": "e077",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6837
+    },
+    {
+      "id": "e078",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 6840
+    },
+    {
+      "id": "e079",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6652
+    },
+    {
+      "id": "e080",
+      "label": "scam",
+      "lang": "yo",
+      "verdict": "likely_scam",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 7662
+    },
+    {
+      "id": "e081",
+      "label": "scam",
+      "lang": "ha",
+      "verdict": "suspicious",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3961
+    },
+    {
+      "id": "e082",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 6229
+    },
+    {
+      "id": "e083",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 3,
+      "droppedFlags": 0,
+      "latencyMs": 8114
+    },
+    {
+      "id": "e084",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6901
+    },
+    {
+      "id": "e085",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8755
+    },
+    {
+      "id": "e086",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6894
+    },
+    {
+      "id": "e087",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 6513
+    },
+    {
+      "id": "e088",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 2,
+      "droppedFlags": 0,
+      "latencyMs": 7115
+    },
+    {
+      "id": "e089",
+      "label": "scam",
+      "lang": "en",
+      "verdict": "likely_scam",
+      "rulesVerdict": "suspicious",
+      "modelFlags": 1,
+      "droppedFlags": 0,
+      "latencyMs": 8143
+    },
+    {
+      "id": "e090",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3886
+    },
+    {
+      "id": "e091",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3768
+    },
+    {
+      "id": "e092",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4233
+    },
+    {
+      "id": "e093",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4201
+    },
+    {
+      "id": "e094",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3967
+    },
+    {
+      "id": "e095",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3798
+    },
+    {
+      "id": "e096",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4680
+    },
+    {
+      "id": "e097",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3936
+    },
+    {
+      "id": "e098",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4123
+    },
+    {
+      "id": "e099",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3489
+    },
+    {
+      "id": "e100",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3650
+    },
+    {
+      "id": "e101",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4199
+    },
+    {
+      "id": "e102",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4412
+    },
+    {
+      "id": "e103",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3886
+    },
+    {
+      "id": "e104",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3566
+    },
+    {
+      "id": "e105",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3623
+    },
+    {
+      "id": "e106",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3893
+    },
+    {
+      "id": "e107",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3307
+    },
+    {
+      "id": "e108",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3628
+    },
+    {
+      "id": "e109",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4020
+    },
+    {
+      "id": "e110",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4052
+    },
+    {
+      "id": "e111",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3800
+    },
+    {
+      "id": "e112",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4133
+    },
+    {
+      "id": "e113",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3606
+    },
+    {
+      "id": "e114",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3168
+    },
+    {
+      "id": "e115",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4512
+    },
+    {
+      "id": "e116",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3910
+    },
+    {
+      "id": "e117",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3294
+    },
+    {
+      "id": "e118",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3481
+    },
+    {
+      "id": "e119",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3427
+    },
+    {
+      "id": "e120",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3821
+    },
+    {
+      "id": "e121",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4189
+    },
+    {
+      "id": "e122",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4091
+    },
+    {
+      "id": "e123",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3797
+    },
+    {
+      "id": "e124",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4539
+    },
+    {
+      "id": "e125",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3552
+    },
+    {
+      "id": "e126",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4444
+    },
+    {
+      "id": "e127",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3766
+    },
+    {
+      "id": "e128",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3555
+    },
+    {
+      "id": "e129",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3999
+    },
+    {
+      "id": "e130",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3991
+    },
+    {
+      "id": "e131",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3628
+    },
+    {
+      "id": "e132",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3623
+    },
+    {
+      "id": "e133",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3815
+    },
+    {
+      "id": "e134",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4845
+    },
+    {
+      "id": "e135",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3692
+    },
+    {
+      "id": "e136",
+      "label": "legit",
+      "lang": "pcm",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 7279
+    },
+    {
+      "id": "e137",
+      "label": "legit",
+      "lang": "pcm",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 5173
+    },
+    {
+      "id": "e138",
+      "label": "legit",
+      "lang": "pcm",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3212
+    },
+    {
+      "id": "e139",
+      "label": "legit",
+      "lang": "yo",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4391
+    },
+    {
+      "id": "e140",
+      "label": "legit",
+      "lang": "yo",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 4377
+    },
+    {
+      "id": "e141",
+      "label": "legit",
+      "lang": "yo",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 5793
+    },
+    {
+      "id": "e142",
+      "label": "legit",
+      "lang": "ha",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3400
+    },
+    {
+      "id": "e143",
+      "label": "legit",
+      "lang": "ha",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3977
+    },
+    {
+      "id": "e144",
+      "label": "legit",
+      "lang": "ig",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3556
+    },
+    {
+      "id": "e145",
+      "label": "legit",
+      "lang": "ig",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3463
+    },
+    {
+      "id": "e146",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 5752
+    },
+    {
+      "id": "e147",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "suspicious",
+      "rulesVerdict": "likely_scam",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3857
+    },
+    {
+      "id": "e148",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 5421
+    },
+    {
+      "id": "e149",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3465
+    },
+    {
+      "id": "e150",
+      "label": "legit",
+      "lang": "en",
+      "verdict": "no_red_flags",
+      "rulesVerdict": "no_red_flags",
+      "modelFlags": 0,
+      "droppedFlags": 0,
+      "latencyMs": 3516
+    }
+  ]
+}
