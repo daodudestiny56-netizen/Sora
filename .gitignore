@@ -17,3 +17,6 @@ next-env.d.ts
 __pycache__/
 .venv/
 services/voice/models/
+
+# tesseract language data cached by local OCR runs
+*.traineddata
