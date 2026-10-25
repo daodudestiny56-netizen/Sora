@@ -57,3 +57,13 @@ describe("on-device OCR cleanup", () => {
     expect(runRules(t).verdict).toBe("likely_scam");
   });
 });
+
+describe("offline check (PWA)", () => {
+  it("runs rules and templates on the device with every language filled", async () => {
+    const { analyzeLocally } = await import("@/lib/sora/local");
+    const a = analyzeLocally("Dear customer, kindly send your BVN and OTP to unblock your account");
+    expect(a.verdict).toBe("likely_scam");
+    expect(a.engine.fallbackReason).toBe("offline");
+    expect(Object.keys(a.explanations).sort()).toEqual(["en", "ha", "ig", "pcm", "yo"]);
+  });
+});
