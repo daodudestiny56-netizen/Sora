@@ -212,11 +212,11 @@ warnings); accuracy; precision; *grounding rate* (model quotes found in the mess
 for word in the message (0 invented quotes on this set).
 
 Run on 2026-10-25 with `npm run eval -- --backend gemini` (English explanations only, to keep the run
-short). Per language, Gemma 4 + rules caught every scam in Pidgin (7/7), Yorùbá (5/5), Hausa (5/5) and
-Igbo (4/4), but these subsets are tiny.
+short). Per language, Gemma 4 + rules caught every scam in Pidgin (7/7), Yorùbá (5/5), Hausa (4/4) and
+Igbo (3/3), but these subsets are tiny.
 
 **What went wrong, and why:**
-- **1 missed scam** (`e058`, "double your money" in Pidgin). Google's API returned an internal error
+- **1 missed scam** (`e058`, a fake "Shell is recruiting drivers" job asking for a form fee). Google's API returned an internal error
   (HTTP 500) for this message even after retries, so it was judged by the rules alone, which miss it.
   6 of 150 calls failed this way and fell back to rules. We report them as they happened rather than
   re-running only the failures. When we re-ran `e058` by itself, Gemma flagged it as a likely scam.
