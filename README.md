@@ -69,7 +69,7 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
 | **Evidence highlights** | Each red flag quotes the exact phrase from the message, highlighted in place, with a one-line reason. |
 | **What to do** | 1–3 concrete steps, e.g. “Check your balance in your bank app, not the SMS.” |
 | **Five languages** | English, Pidgin, Yorùbá, Hausa and Igbo, with full tone marks on the web. |
-| **Screenshots** | Gemma 4 reads text from screenshots (sender ID, links, amounts). |
+| **Screenshots** | Gemma 4 reads text from screenshots (sender ID, links, amounts). Without a model, or if the model fails, Tesseract.js reads them **on the device**, so the image never leaves the phone. |
 | **Voice notes** | YarnGPT2 Nigerian-accent TTS. Download or share. |
 | **Share to WhatsApp** | One tap sends the explanation to family. |
 | **Button phones** | USSD menu and SMS forwarding, same engine, replies sized for 2G screens. |
@@ -136,7 +136,8 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
   Quotes that don't match are dropped and counted, and the eval reports the grounding rate.
 - **Never “safe”.** The calmest verdict is “No red flags found. Still confirm with your bank directly.”
 - **Graceful degradation.** No API key, rate limit or timeout → rules + reviewed templates answer, and
-  the UI says “Rules mode”. USSD gets an 8 s model budget because sessions time out at about 20 s.
+  the UI says “Rules mode”. Screenshots then fall back to on-device OCR (Tesseract.js), which also
+  rejoins chat-bubble line wraps so split links are still caught. USSD gets an 8 s model budget because sessions time out at about 20 s.
 - **GSM-7 for phones.** Tone marks force UCS-2 encoding (70 chars per SMS instead of 160) and many basic
   phones can't display them, so phone replies are folded to plain letters. The web keeps full orthography.
 - **One codebase on Vercel.** Next.js 16 (App Router) serves the UI and the API as serverless functions.
@@ -146,7 +147,7 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
 - **Privacy.** Messages are processed in memory, never stored or logged.
 
 **Dependencies:** Next.js 16, React 19, TypeScript 5.9, Tailwind CSS 4, Motion, Phosphor Icons, Zod
-(runtime), Vitest, tsx (dev). Voice service: Python 3.11, FastAPI, PyTorch, transformers, YarnGPT.
+(runtime), Tesseract.js (on-device OCR fallback), Vitest, tsx (dev). Voice service: Python 3.11, FastAPI, PyTorch, transformers, YarnGPT.
 
 ## 7. Setup, run, test, reproduce
 
@@ -165,11 +166,11 @@ npm run dev                 # http://localhost:3000
 - **Hosted Gemma 4 (easiest):** set `GEMINI_API_KEY=...`. Uses `gemma-4-26b-a4b-it`.
 - **Local Gemma 4 E4B (offline):** `ollama pull gemma4:e4b`, then set `SORA_BACKEND=openai`
   (the defaults point to `http://localhost:11434/v1`).
-- **No model:** leave both empty. Ṣọ́ra runs on rules + templates. Screenshots are disabled.
+- **No model:** leave both empty. Ṣọ́ra runs on rules + templates, and screenshots are read on the device with Tesseract.js.
 
 **Tests and checks**
 ```bash
-npm test            # rules, grounding, merge, USSD/SMS (23 tests)
+npm test            # rules, grounding, merge, OCR cleanup, USSD/SMS (24 tests)
 npm run typecheck
 npm run lint
 npm run build
@@ -286,7 +287,7 @@ text, new **anonymised scam examples**, and new rules. See [CONTRIBUTING.md](CON
 - **N-ATLaS** (NCAIR / Awarri) and **Qwen**: considered and documented as comparison models.
 - **Africa's Talking**: USSD and SMS callback format.
 - Libraries: Next.js, React, Tailwind CSS, Motion, Phosphor Icons, Zod, Vitest, tsx, FastAPI, PyTorch,
-  Hugging Face transformers. Fonts: Fraunces and Geist (SIL Open Font License).
+  Hugging Face transformers. **Tesseract.js** (Apache 2.0) for on-device OCR. Fonts: Bricolage Grotesque and Geist Mono (SIL Open Font License).
 - Scam patterns are drawn from public CBN and bank fraud advisories and Nigerian tech press. Sources
   are listed in [`docs/planning/01-RESEARCH.md`](docs/planning/01-RESEARCH.md).
 - **AI-assisted work (disclosed as the challenge rules require):** we used an AI coding assistant
