@@ -1,3 +1,4 @@
+import { unwrap } from "../ocr";
 import { fuzzyGrounded, locateQuote } from "./grounding";
 import { OCR_SYSTEM, OCR_USER, analysisSystem, analysisUser, parseModelJson, type ModelOutput } from "./prompt";
 import { getProvider, resolveBackend, type ImageInput, type Provider } from "./providers";
@@ -108,7 +109,8 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
       maxTokens: 1024,
       timeoutMs: Math.min(timeoutMs, 30_000),
     });
-    const ocr = raw.trim();
+    // Rejoin chat-bubble line wraps so split links and phrases still match rules.
+    const ocr = unwrap(raw);
     if (!ocr || ocr === "NO_TEXT") throw new InputError("No readable text found in that image.");
     text = [text, ocr].filter(Boolean).join("\n\n");
   }
