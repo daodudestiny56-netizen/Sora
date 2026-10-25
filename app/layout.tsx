@@ -13,7 +13,7 @@ const bricolage = Bricolage_Grotesque({
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://sora-check.vercel.app"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://sora-ecru-kappa.vercel.app"),
   title: "Ṣọ́ra — Check a message before you send money",
   description:
     "Ṣọ́ra checks a suspicious SMS, WhatsApp message or screenshot, shows exactly which words are red flags, and explains it in English, Pidgin, Yorùbá, Hausa and Igbo. Works on button phones by SMS and USSD.",

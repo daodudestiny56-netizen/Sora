@@ -11,7 +11,7 @@ Built for **OPEN//BUILD 2026** (OSCA Ile-Ife Hacktoberfest).
 
 | | |
 |---|---|
-| **Live demo** | _add Vercel URL after deploy_ |
+| **Live demo** | https://sora-ecru-kappa.vercel.app |
 | **Demo video** | _add link_ |
 | **Run locally** | [Setup](#7-setup-run-test-reproduce): `npm install && npm run dev` |
 | **Licence** | Code: Apache-2.0 · Eval data: CC BY 4.0 |
