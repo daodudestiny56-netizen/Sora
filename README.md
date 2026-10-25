@@ -38,10 +38,10 @@ Built for **OPEN//BUILD 2026** (OSCA Ile-Ife Hacktoberfest).
 ---
 
 ## 1. Team
-| Name | University | Role |
-|---|---|---|
-| _Full name_ | _University_ | Model, eval, backend |
-| _Full name_ | _University_ | Data, UI, docs, demo |
+| Name | University |
+|---|---|
+| Daodu Destiny | Obafemi Awolowo University (OAU), Ile-Ife |
+| Oyewole Caleb | Obafemi Awolowo University (OAU), Ile-Ife |
 
 ## 2. Problem statement
 Nigerian families get a steady stream of scam messages: "your BVN is blocked, click to verify",
