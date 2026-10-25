@@ -1,0 +1,7 @@
+# Never upload secrets or things the web app doesn't need
+.env
+.env.*
+!.env.example
+services/
+docs/planning/*.pdf
+*.traineddata
