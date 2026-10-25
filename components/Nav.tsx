@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { GithubLogo } from "@phosphor-icons/react";
+import { InstallButton } from "./Pwa";
 import { EASE } from "./ui";
 
 export const REPO_URL = "https://github.com/daodudestiny56-netizen/Sora";
@@ -40,6 +41,7 @@ export function Nav() {
               </a>
             ))}
           </div>
+          <InstallButton className="ml-1" />
           <a
             href={REPO_URL}
             target="_blank"
