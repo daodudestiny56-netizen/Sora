@@ -29,14 +29,21 @@ everything a scam is useless, so we measure false alarms as carefully as missed 
   are optimistic**. Model prompts were not tuned on it.
 - Contributions of real, anonymised messages are welcome. See `CONTRIBUTING.md`.
 
-## Held-out set (real messages)
-Put real, anonymised messages that people share with us (with their permission) in a separate file,
-for example `data/holdout.jsonl`, with the same fields as `eval.jsonl` (`id`, `label`, `scam_type`,
-`lang`, `source`, `text`). Never add them to `eval.jsonl`, and never tune a rule on them. Then run:
+## Held-out set (`holdout.jsonl`)
+50 messages (30 scam, 20 legitimate; 43 English, 7 Pidgin) written after the rules were frozen, to check
+how the rules do on wording they were not built for. They are synthetic and AI-assisted like `eval.jsonl`
+(`source` is `synthetic-holdout-ai-assisted`), with fake numbers and no personal data. Same fields as
+`eval.jsonl`. Rules-only result: 43.3% scam recall, 26.7% strict recall, 5.0% false alarms, 64.0% accuracy
+(`eval/results/rules.holdout.json`).
+
+**Rules for this file:** never add its messages to `eval.jsonl`, and never change a rule because of a miss
+here. If you do, this file stops being a held-out set, so start a new one from fresh messages. Real,
+anonymised messages from parent testing (with permission) belong in a new file such as
+`data/holdout-real.jsonl`, not in this one.
 
 ```
 npm run eval -- --data data/holdout.jsonl                       # rules only
-npm run eval -- --backend gemini --data data/holdout.jsonl      # Gemma 4 + rules
+npm run eval -- --backend gemini --data data/holdout.jsonl      # Gemma 4 + rules (needs a Gemini key)
 ```
 
 A run on another file, or with `--limit`, writes its own file in `eval/results/` and leaves
