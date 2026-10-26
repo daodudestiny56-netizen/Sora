@@ -57,13 +57,18 @@ function gemini(apiKey: string, model: string): Provider {
     backend: "gemini",
     model,
     async complete(req) {
-      let res = await call(req, true);
-      // Not every model accepts thinkingConfig; retry once without it.
-      if (res.status === 400) res = await call(req, false);
+      let withThinking = true;
+      let res = await call(req, withThinking);
+      // Not every model accepts thinkingConfig; retry once without it and remember that for later retries.
+      if (res.status === 400) {
+        withThinking = false;
+        res = await call(req, withThinking);
+      }
       // The hosted API returns occasional transient 500/503s; two quick retries recover almost all of them.
+      // Keep using the variant that worked, or a model that rejects thinkingConfig would 400 on every retry.
       for (let attempt = 1; attempt <= 2 && (res.status === 500 || res.status === 503); attempt++) {
         await new Promise((r) => setTimeout(r, 600 * attempt));
-        res = await call(req, true);
+        res = await call(req, withThinking);
       }
       if (!res.ok) throw new ProviderError(`Gemini API ${res.status}: ${(await res.text()).slice(0, 300)}`, res.status);
       const json = (await res.json()) as {
