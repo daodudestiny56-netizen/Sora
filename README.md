@@ -258,10 +258,15 @@ warnings); accuracy; precision; *grounding rate* (model quotes found in the mess
 | Rules only, revision 2 (current; also the offline mode) | 98.9% | 56.2% | 1.6% | 98.7% | n/a | <1 ms |
 | **Gemma 4 26B A4B + rules** ³ | **98.9%** | **95.5%** | **1.6%** | **98.7%** | **100%** | 6.6 s / 8.7 s |
 | Gemma 4 E4B + rules (local) | _pending: needs a machine with Ollama_ | | | | | |
+| Rules only, revision 2, on 50 fresh messages ⁴ | 43.3% | 26.7% | 5.0% | 64.0% | n/a | <1 ms |
+| Gemma 4 26B A4B + rules, on the same 50 fresh messages ⁴ | _pending: needs the Gemini key_ | | | | | |
 
 ¹ Flagged as *likely scam* rather than *suspicious*. ² Share of the model's quoted evidence found word
 for word in the message (0 invented quotes on this set). ³ Measured with rules revision 1 and before the
-prompt hardening; being re-run with the current code.
+prompt hardening; being re-run with the current code. ⁴ [`data/holdout.jsonl`](data/holdout.jsonl): 30
+scams and 20 legitimate messages in English and Pidgin, written after the rules were frozen. No rule was
+tuned on them. They are still synthetic and AI-assisted, and small, so treat them as a rough check, not a
+benchmark.
 
 Run on 2026-10-25 with `npm run eval -- --backend gemini` (English explanations only, to keep the run
 short). Per language, Gemma 4 + rules caught every scam in Pidgin (7/7), Yorùbá (5/5), Hausa (4/4) and
@@ -282,12 +287,16 @@ Igbo (3/3), but these subsets are tiny.
 set, so both rows are optimistic, and revision 2 is no longer a fair baseline. It was written to catch
 exactly the 15 scams revision 1 missed (fake jobs and delivery or meter fees, "lost my phone" and
 relative-in-danger requests, a "pastor" asking for money, investment pitches, a "fine" to avoid arrest).
-One scam still gets through: a romance request for a gift card (`e070`). Short regex rules are brittle
-when a scammer rewords, so the number that matters is how they do on messages nobody tuned them on. We
-check that with unit tests on messages outside the eval set and with a held-out set of real, anonymised
-messages (see [`data/README.md`](data/README.md)). Gemma 4 earns its place elsewhere: it reads context and
-wording we did not anticipate, quotes the evidence, reads screenshots, and writes the explanation in five
-languages. The offline mode uses only the rules, so it has the same limits.
+One scam still gets through: a romance request for a gift card (`e070`).
+
+Short regex rules are brittle when a scammer rewords, and the held-out row shows it. On 50 messages
+written after the rules were frozen, the rules alone caught 43.3% of the scams (13 of 30) and raised 1
+false alarm in 20 (a real "your card has been blocked at your request" notice). So 98.9% describes how
+well the rules fit the eval set, not how well they work on new scams. The offline mode uses only the
+rules, so it has the same limit. Gemma 4 is the part that handles wording we did not anticipate. It also
+quotes the evidence, reads screenshots and writes the explanation in five languages. Its result on the
+held-out set is pending. The held-out messages are synthetic and AI-assisted like the rest of the data;
+real, anonymised messages from our parent testing will be added (see [`data/README.md`](data/README.md)).
 
 **Yorùbá/Hausa/Igbo quality** will be reported as a native-speaker rating (1–5 on 30 explanations), not
 as a benchmark.
@@ -322,9 +331,9 @@ Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
   native-speaker review. See [`docs/LANGUAGES.md`](docs/LANGUAGES.md).
 - **Small synthetic eval set**, mostly English. It shows the pipeline works on known patterns, not
   real-world accuracy.
-- **Offline mode is weaker.** It uses the rules only. They catch 99% of scams on our set, but they were
-  tuned on it, so expect less on messages they have not seen. A reworded scam can slip past a regex rule.
-  On-device OCR reads English well but may drop Yorùbá tone marks.
+- **Offline mode is weaker.** It uses the rules only. They caught 43% of the scams in our held-out check
+  of 50 fresh messages (99% on the eval set they were tuned on), so a reworded scam can slip past them.
+  Use the online mode for anything important. On-device OCR reads English well but may drop Yorùbá tone marks.
 - **Voice notes** need the separate YarnGPT2 service, which is slow on free CPU hosting and not yet
   deployed. Without it, the web app uses the device voice for English and Pidgin only.
 - **WhatsApp** runs on Twilio's sandbox: each tester must first send the sandbox `join` code. A public
