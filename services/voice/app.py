@@ -12,15 +12,21 @@ import hashlib
 import io
 import os
 import re
+import subprocess
+import wave
 from collections import OrderedDict
 
+import numpy as np
 import torch
-import torchaudio
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel, Field
 from transformers import AutoModelForCausalLM
-from yarngpt.audiotokenizer import AudioTokenizerV2
+
+# The Dockerfile clones saheedniyi02/yarngpt to /opt/yarngpt and puts that folder on PYTHONPATH.
+# audiotokenizer.py sits at the root of that repo, so it imports as a top-level module (there is no
+# `yarngpt.audiotokenizer` there; the `yarngpt` package in python-wrapper/ is a different wrapper).
+from audiotokenizer import AudioTokenizerV2
 
 MODEL_ID = "saheedniyi/YarnGPT2"
 MODELS_DIR = os.environ.get("MODELS_DIR", "/models")
@@ -71,6 +77,34 @@ def sentences(text: str, max_len: int = 220) -> list[str]:
     return out[:8]
 
 
+SAMPLE_RATE = 24000
+
+
+def encode_wav(samples: np.ndarray) -> bytes:
+    """16-bit mono WAV using only the standard library (no dependency on torchaudio's save backends)."""
+    pcm = (np.clip(samples.reshape(-1), -1.0, 1.0) * 32767).astype("<i2")
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(SAMPLE_RATE)
+        w.writeframes(pcm.tobytes())
+    return buf.getvalue()
+
+
+def wav_to_mp3(wav: bytes) -> bytes:
+    """WhatsApp accepts MP3 but not WAV. Convert with the ffmpeg that the Docker image installs."""
+    done = subprocess.run(
+        ["ffmpeg", "-loglevel", "error", "-f", "wav", "-i", "pipe:0", "-codec:a", "libmp3lame", "-b:a", "64k", "-f", "mp3", "pipe:1"],
+        input=wav,
+        capture_output=True,
+        timeout=30,
+    )
+    if done.returncode != 0 or not done.stdout:
+        raise RuntimeError(f"ffmpeg failed: {done.stderr.decode(errors='replace')[:200]}")
+    return done.stdout
+
+
 @torch.inference_mode()
 def synthesize(text: str, lang: str, fmt: str = "wav") -> bytes:
     language, speaker = VOICES[lang]
@@ -80,11 +114,10 @@ def synthesize(text: str, lang: str, fmt: str = "wav") -> bytes:
         input_ids = audio_tokenizer.tokenize_prompt(prompt)
         output = model.generate(input_ids=input_ids, temperature=0.1, repetition_penalty=1.1, max_length=4000)
         clips.append(audio_tokenizer.get_audio(audio_tokenizer.get_codes(output)))
-        clips.append(torch.zeros(1, 24000 // 4))  # short pause between sentences
-    audio = torch.cat([c.reshape(1, -1).cpu() for c in clips], dim=1)
-    buf = io.BytesIO()
-    torchaudio.save(buf, audio, sample_rate=24000, format=fmt)  # mp3 uses the ffmpeg in the image
-    return buf.getvalue()
+        clips.append(torch.zeros(1, SAMPLE_RATE // 4))  # short pause between sentences
+    audio = torch.cat([c.reshape(1, -1).cpu().float() for c in clips], dim=1)
+    wav = encode_wav(audio.numpy())
+    return wav_to_mp3(wav) if fmt == "mp3" else wav
 
 
 @app.get("/health")

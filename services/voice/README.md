@@ -18,6 +18,19 @@ The free CPU tier works but is slow (a 3-sentence note can take 30–60 s) and s
 first request after a pause also waits for a cold start. Use a GPU Space for live demos, or play each
 demo message once before presenting to fill the cache.
 
+## Check it after deploying
+Replace `$URL` and `$TOKEN`. Each call should return audio; the first one is slow because the model loads.
+```bash
+curl $URL/health                                   # {"ok":true,"device":"cpu",...}
+for L in en yo ha ig; do
+  curl -s -X POST $URL/tts -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+    -d '{"text":"Ẹ ṣọ́ra o. Ọ̀rọ̀ yìí ní àwọn àmì ewu.","lang":"'$L'","format":"mp3"}' -o note_$L.mp3
+done
+file note_*.mp3                                    # each should say "MPEG ... layer III"
+```
+If the Space logs show `ModuleNotFoundError`, check that the build finished and that `PYTHONPATH=/opt/yarngpt`
+is set (the Dockerfile sets it).
+
 ## Run locally
 ```bash
 docker build -t sora-voice services/voice
@@ -28,5 +41,8 @@ curl -X POST localhost:7860/tts -H "Authorization: Bearer dev" -H "Content-Type:
 
 ## Known limits (from the model card and our checks)
 - Audio can sound rushed, and the model may not cover every accent.
-- Yorùbá needs full tone marks in the input to be pronounced well. Ṣọ́ra's prompts ask Gemma for them.
+- The helper's text front end (`process_text` in yarngpt's `audiotokenizer.py`) romanizes the input and keeps only
+  plain a-z letters, so tone marks and dot-below letters are dropped before synthesis. Tone marks in the text do
+  not change the audio. This comes from reading the code, not from listening, so a native speaker should judge
+  how the Yorùbá, Hausa and Igbo voices sound.
 - Not yet load-tested. Each request runs sentence by sentence with a small in-memory cache.
