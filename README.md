@@ -93,7 +93,7 @@ or screenshots, don't speak Yorùbá, Hausa, Igbo or Pidgin, and don't help peop
 | Practice game | ✅ Live |
 | USSD and SMS | ✅ Endpoints and website simulator live. Real phone numbers need a paid Africa's Talking shortcode. |
 | WhatsApp bot | ✅ Built and tested locally. Needs Twilio sandbox keys to receive real WhatsApp messages. |
-| Voice notes (YarnGPT2) | ⏳ Service built ([`services/voice`](services/voice)), not yet deployed. English and Pidgin use the device voice meanwhile. |
+| Voice notes (YarnGPT2) | ⏳ Service built ([`services/voice`](services/voice)) and run locally in Docker: it returns audio in all four voices. Not yet hosted, so the live site does not use it. English and Pidgin use the device voice meanwhile. |
 
 ## 5. Model information
 
