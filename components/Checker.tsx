@@ -87,9 +87,10 @@ export function Checker() {
     try {
       const extracted = await readTextOnDevice(img, setOcrProgress);
       if (!extracted) throw new Error("No readable text found in that screenshot. Try pasting the text instead.");
-      const combined = [text.trim(), extracted].filter(Boolean).join("\n\n");
-      setText(combined);
-      return await post({ text: combined });
+      // Replace, don't append: the text box is hidden on the Screenshot tab, so earlier text must not leak into this check,
+      // and a second upload must not stack on the first. The extracted text lands in the box so it can be corrected.
+      setText(extracted);
+      return await post({ text: extracted });
     } finally {
       setOcrProgress(null);
     }
@@ -105,7 +106,8 @@ export function Checker() {
       if (override === undefined && mode === "image" && image) {
         if (modelLive) {
           try {
-            analysis = await post({ image, text: text || undefined });
+            // Only the screenshot: any text left in the (hidden) paste box belongs to an earlier check.
+            analysis = await post({ image });
           } catch (e) {
             // Model couldn't read it (rate limit, timeout, outage): fall back to on-device OCR.
             if ((e as { status?: number }).status === 400) throw e;
