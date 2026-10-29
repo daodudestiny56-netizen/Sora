@@ -21,7 +21,11 @@ interface Rule {
 const SECRETS =
   "(?:otp|o\\.t\\.p|one[- ]time (?:password|pin|code)|pin|bvn|nin|password|passcode|token|cvv|card (?:details|number)|atm card|verification code|security code|login details)";
 
-const NEGATION = /\b(?:do not|don't|dont|never|no go|not|no)\b[^.!?\n]{0,30}$/i;
+// "Do not share your OTP" / "never send…" / Pidgin "no go give": the negation must govern the verb directly
+// (at most two words between), so "Not to worry, kindly send your OTP" is still caught.
+const NEGATION = /\b(?:do not|don't|dont|never|no go|no dey)\s+(?:\w+\s+){0,2}$/i;
+// Fees: "there is no registration fee" is reassurance, not a demand.
+const FEE_NEGATION = /\b(?:no|free of|without|zero)\s+(?:\w+\s+){0,2}$/i;
 
 /** Text a bank or app legitimately sends next to an OTP: "Do not share", "If you didn't request". */
 const notNegated = (text: string, m: RegExpExecArray) =>
@@ -156,6 +160,7 @@ const RULES: Rule[] = [
     severity: "high",
     reason: "Asks you to pay a fee before you receive money. Real grants, loans and prizes don't do this.",
     pattern: /\b(?:pay|send|transfer)\b[^.!?\n]{0,40}\b(?:processing|registration|activation|delivery|clearance|release|verification|admin(?:istrative)?|form|insurance|tax|logistics|unlocking|customs|upgrade|documentation)\s+(?:fee|charge|levy)\b|\b(?:processing|registration|activation|clearance|release|unlocking|upgrade) fee\b/gi,
+    accept: (text, m) => !FEE_NEGATION.test(text.slice(Math.max(0, m.index - 40), m.index)),
   },
   {
     category: "advance_fee",
@@ -203,7 +208,10 @@ const RULES: Rule[] = [
     reason: "Asks for a form, training, update or delivery fee. Real jobs, utilities and couriers don't charge these by text.",
     pattern: /\b(?:registration|application|interview|training|uniform|medical|document(?:ation)?|meter update|re-?delivery|form|sorting)(?: (?:form|materials?|kit|update))? (?:fee|charge|levy)s?\b/gi,
     // Skip receipts ("your application fee has been received") and "there is no form fee".
-    accept: (text, m) => notNegated(text, m) && !/\b(?:received|confirmed|receipt|successful(?:ly)?)\b/i.test(text),
+    accept: (text, m) =>
+      notNegated(text, m) &&
+      !FEE_NEGATION.test(text.slice(Math.max(0, m.index - 40), m.index)) &&
+      !/\b(?:received|confirmed|receipt|successful(?:ly)?)\b/i.test(text),
   },
   {
     category: "advance_fee",

@@ -138,3 +138,19 @@ describe("rules against data/eval.jsonl", () => {
     expect(caught / scams.length).toBeGreaterThanOrEqual(0.95);
   });
 });
+
+describe("negation guard (audit regression)", () => {
+  it("still catches a credential request after an unrelated 'not'", () => {
+    expect(runRules("Not to worry, kindly send your OTP to complete the upgrade.").verdict).toBe("likely_scam");
+    expect(runRules("If you do not want your account blocked, send your BVN now").verdict).toBe("likely_scam");
+  });
+
+  it("still lets genuine 'do not share' messages through", () => {
+    expect(runRules("Your OTP is 482913. Do not share this OTP with anyone.").verdict).toBe("no_red_flags");
+    expect(runRules("NCC reminds you: never share your SIM PIN or OTP with anyone.").verdict).toBe("no_red_flags");
+  });
+
+  it("treats 'no registration fee' as reassurance", () => {
+    expect(runRules("Applications are open. There is no registration fee.").flags.filter((f) => f.category === "advance_fee")).toHaveLength(0);
+  });
+});
