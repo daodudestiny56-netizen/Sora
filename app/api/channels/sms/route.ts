@@ -24,6 +24,10 @@ export async function POST(req: Request) {
     text = String(form?.get("text") ?? "");
   }
   const { lang, reply } = await handleSms(text.slice(0, 1000));
-  const sent = from ? await sendSms(from, reply).catch(() => false) : false;
+  // Only reply by SMS to genuine Africa's Talking callbacks: the callback URL carries ?secret=AT_WEBHOOK_SECRET.
+  // Otherwise anyone could make us text any number at our cost. The website simulator just reads `reply`.
+  const secret = process.env.AT_WEBHOOK_SECRET;
+  const fromAT = !!secret && new URL(req.url).searchParams.get("secret") === secret && !type.includes("application/json");
+  const sent = fromAT && from ? await sendSms(from, reply).catch(() => false) : false;
   return Response.json({ lang, reply, sent });
 }

@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { parseSmsLanguage } from "./channels";
+import { INCOMPLETE, isIncomplete } from "./templates";
 import type { Analysis, Lang, Verdict } from "./types";
 
 /**
@@ -30,6 +31,7 @@ export const FOOTER =
   "_Reply with YO, HA, IG or PCM before a message for another language. Ṣọ́ra can be wrong: always confirm with your bank._";
 
 export function formatReply(a: Analysis, lang: Lang): string {
+  if (isIncomplete(a)) return [`🟠 *Ṣọ́ra: ${INCOMPLETE[lang].label}*`, "", INCOMPLETE[lang].summary, "", FOOTER].join("\n");
   const exp = a.explanations[lang] ?? a.explanations.en!;
   const lines = [`${ICON[a.verdict]} *Ṣọ́ra: ${LABEL[lang][a.verdict]}*`, "", exp.summary];
   if (exp.actions.length) lines.push("", `*${TODO[lang]}:*`, ...exp.actions.map((x, i) => `${i + 1}. ${x}`));
@@ -92,13 +94,21 @@ export async function sendWhatsApp(c: TwilioCreds, to: string, body: string, med
   if (!res.ok) console.error("twilio send failed:", res.status);
 }
 
-/** Download a WhatsApp image (Twilio media URLs need the account credentials). */
-export async function fetchMedia(c: TwilioCreds | null, url: string): Promise<{ mimeType: string; data: string } | null> {
-  const res = await fetch(url, {
-    headers: c ? { Authorization: `Basic ${Buffer.from(`${c.sid}:${c.token}`).toString("base64")}` } : {},
+/** Download a WhatsApp image. Only Twilio's own media host is ever fetched (no open proxy / SSRF). */
+export async function fetchMedia(c: TwilioCreds, url: string): Promise<{ mimeType: string; data: string } | null> {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return null;
+  }
+  if (u.protocol !== "https:" || u.hostname !== "api.twilio.com") return null;
+  const res = await fetch(u, {
+    headers: { Authorization: `Basic ${Buffer.from(`${c.sid}:${c.token}`).toString("base64")}` },
     signal: AbortSignal.timeout(15_000),
   });
   if (!res.ok) return null;
+  if (Number(res.headers.get("content-length") ?? 0) > 5_000_000) return null;
   const mimeType = res.headers.get("content-type") ?? "image/jpeg";
   if (!/^image\/(png|jpe?g|webp)/.test(mimeType)) return null;
   const buf = Buffer.from(await res.arrayBuffer());

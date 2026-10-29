@@ -9,6 +9,7 @@ Runs on CPU (slow, ~real-time or slower) or GPU. Designed for a Hugging Face
 Docker Space; the web app reaches it through /api/voice so the token stays server-side.
 """
 import hashlib
+import hmac
 import io
 import os
 import re
@@ -33,6 +34,9 @@ MODELS_DIR = os.environ.get("MODELS_DIR", "/models")
 WAV_CONFIG = f"{MODELS_DIR}/wavtokenizer_mediumdata_frame75_3s_nq1_code4096_dim512_kmeans200_attn.yaml"
 WAV_MODEL = f"{MODELS_DIR}/wavtokenizer_large_speech_320_24k.ckpt"
 TOKEN = os.environ.get("VOICE_SERVICE_TOKEN", "")
+if not TOKEN:
+    # Synthesis is CPU-heavy: an open endpoint can be tied up by anyone. Refuse to run without a token.
+    raise SystemExit("Set VOICE_SERVICE_TOKEN before starting the voice service.")
 
 # YarnGPT2 has no Pidgin voice; a Nigerian-accent English voice reads Pidgin naturally enough.
 VOICES = {
@@ -59,7 +63,7 @@ class TTSRequest(BaseModel):
 
 
 def check_token(authorization: str = Header(default="")) -> None:
-    if TOKEN and authorization != f"Bearer {TOKEN}":
+    if not hmac.compare_digest(authorization.encode(), f"Bearer {TOKEN}".encode()):
         raise HTTPException(status_code=401, detail="unauthorized")
 
 

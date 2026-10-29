@@ -62,7 +62,8 @@ export async function POST(req: Request) {
   async function run(): Promise<{ text: string; voice?: string }> {
     let a: Analysis;
     try {
-      const media = numMedia ? await fetchMedia(creds, params.MediaUrl0 ?? "") : null;
+      // Screenshots need a signed Twilio request; without credentials the endpoint never fetches a URL.
+      const media = numMedia && creds ? await fetchMedia(creds, params.MediaUrl0 ?? "") : null;
       if (numMedia && !media) return { text: "I can read photos and screenshots (PNG or JPG). For anything else, paste the text." };
       a = await analyze(
         { text: message || undefined, ...(media && { image: media }) },
@@ -83,9 +84,13 @@ export async function POST(req: Request) {
 
   if (creds) {
     after(async () => {
-      const r = await run();
-      await sendWhatsApp(creds, from, r.text);
-      if (r.voice) await sendWhatsApp(creds, from, "🔊", r.voice);
+      try {
+        const r = await run();
+        await sendWhatsApp(creds, from, r.text);
+        if (r.voice) await sendWhatsApp(creds, from, "🔊", r.voice);
+      } catch (e) {
+        console.error("whatsapp reply failed:", (e as Error).message);
+      }
     });
     return xml(twiml());
   }
