@@ -1,5 +1,5 @@
 import { analyze } from "./analyze";
-import { ACTION, HEADLINE, WHY, templateExplanation, topCategories } from "./templates";
+import { ACTION, HEADLINE, INCOMPLETE, WHY, isIncomplete, templateExplanation, topCategories } from "./templates";
 import { LANGS, type Analysis, type Lang } from "./types";
 
 /**
@@ -80,6 +80,7 @@ const TIP_LABEL: Record<Lang, string[]> = {
 };
 
 export function shortVerdict(a: Analysis, lang: Lang, max: number): string {
+  if (isIncomplete(a)) return fit(toGsm(INCOMPLETE[lang].summary), max);
   const cats = topCategories(a.redFlags, 1).filter((c) => c !== "model_judgement");
   const why = cats.length ? WHY[lang][cats[0] as keyof (typeof WHY)["en"]] : "";
   const action = (a.explanations[lang] ?? templateExplanation(lang, a.verdict, a.redFlags)).actions[0] ?? "";
@@ -127,7 +128,9 @@ const PREFIX: Record<string, Lang> = { en: "en", eng: "en", english: "en", pcm: 
 /** "YO <forwarded message>" → Yorùbá reply. No prefix → English. */
 export function parseSmsLanguage(body: string): { lang: Lang; message: string } {
   const m = body.trim().match(/^([a-z]{2,7})\b[\s:,-]*/i);
-  const lang = m ? PREFIX[m[1].toLowerCase()] : undefined;
+  const word = m?.[1] ?? "";
+  // Short codes count only in capitals ("YO", "HA"), so a casual "Yo bro…" or "Ha!" isn't read as a language choice.
+  const lang = word && (word.length > 3 || word === word.toUpperCase()) ? PREFIX[word.toLowerCase()] : undefined;
   return lang ? { lang, message: body.trim().slice(m![0].length) } : { lang: "en", message: body.trim() };
 }
 

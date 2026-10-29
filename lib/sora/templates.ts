@@ -1,4 +1,4 @@
-import type { Explanation, FlagCategory, Lang, RedFlag, Verdict } from "./types";
+import type { Analysis, Explanation, FlagCategory, Lang, RedFlag, Verdict } from "./types";
 
 /**
  * Hand-written explanations used when the model is unavailable (rules-only
@@ -35,6 +35,21 @@ export const HEADLINE: Table<Verdict> = {
     suspicious: "Kpachara anya. Ozi a nwere ihe ịdọ aka ná ntị.",
     no_red_flags: "Anyị ahụghị ihe ịdọ aka ná ntị. Ma jụọ ụlọ akụ gị ozugbo.",
   },
+};
+
+/**
+ * A clean result is only trustworthy when the model actually took part. If the model failed (timeout,
+ * quota) or the phone was offline, and the rules found nothing, we must not say "no red flags".
+ */
+export const isIncomplete = (a: Pick<Analysis, "verdict" | "engine">) =>
+  a.verdict === "no_red_flags" && !!a.engine.fallbackReason;
+
+export const INCOMPLETE: Record<Lang, { label: string; summary: string }> = {
+  en: { label: "Couldn't fully check", summary: "We could not finish the full check. Don't pay or reply yet. Try again, or call your bank." },
+  pcm: { label: "We no fit check am well", summary: "We no fit finish the full check. No pay or reply yet. Try again, or call your bank." },
+  yo: { label: "A kò lè yẹ̀ ẹ́ wò tán", summary: "A kò lè parí àyẹ̀wò náà. Ẹ má sanwó tàbí fèsì síbẹ̀. Ẹ tún gbìyànjú, tàbí kí ẹ pe ilé-ìfowópamọ́ yín." },
+  ha: { label: "Ba mu iya kammala bincike ba", summary: "Ba mu iya kammala binciken ba. Kada ku biya ko ku amsa tukuna. Ku sake gwadawa, ko ku kira bankinku." },
+  ig: { label: "Anyị enweghị ike ilecha ya", summary: "Anyị enweghị ike imecha nlele ahụ. Akwụla ụgwọ ma ọ bụ zaghachi ugbu a. Nwaa ọzọ, ma ọ bụ kpọọ ụlọ akụ gị." },
 };
 
 type Why = Exclude<FlagCategory, "model_judgement">;

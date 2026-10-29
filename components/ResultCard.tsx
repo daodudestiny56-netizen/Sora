@@ -14,6 +14,7 @@ import {
   WhatsappLogo,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
+import { INCOMPLETE, isIncomplete } from "@/lib/sora/templates";
 import { LANGS, LANG_NAMES, type Analysis, type Lang, type RedFlag, type Verdict } from "@/lib/sora/types";
 import { EASE } from "./ui";
 
@@ -86,8 +87,14 @@ export function ResultCard({ result, voiceAvailable }: { result: Analysis; voice
   const [copied, setCopied] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
 
-  const v = VERDICT[result.verdict];
-  const exp = result.explanations[lang];
+  const incomplete = isIncomplete(result);
+  // A clean result without the model is not reassurance: show the ochre "couldn't fully check" state.
+  const v = incomplete
+    ? { ...VERDICT.suspicious, label: INCOMPLETE.en.label, sub: "The AI check didn't finish. Don't pay or reply yet." }
+    : VERDICT[result.verdict];
+  const raw = result.explanations[lang];
+  // Under "couldn't fully check", the wording must not read as reassurance either.
+  const exp = raw && incomplete ? { summary: INCOMPLETE[lang].summary, actions: raw.actions } : raw;
   const available = LANGS.filter((l) => result.explanations[l]);
   const spoken = exp ? [exp.summary, ...exp.actions].join(" ") : "";
 
@@ -145,7 +152,7 @@ export function ResultCard({ result, voiceAvailable }: { result: Analysis; voice
       <div className="bezel-core overflow-hidden">
         {/* Verdict */}
         <div className={clsx("relative flex items-center gap-5 px-6 py-6 sm:px-8", v.soft)}>
-          <Seal verdict={result.verdict} />
+          <Seal verdict={incomplete ? "suspicious" : result.verdict} />
           <div className="min-w-0">
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-ink-soft">Verdict</p>
             <h3 className={clsx("font-display text-3xl font-[620] leading-tight tracking-[-0.03em] sm:text-4xl", v.color)}>{v.label}</h3>
