@@ -84,7 +84,7 @@ async function main() {
       for (let attempt = 0; ; attempt++) {
         try {
           const a = await analyze({ text: it.text }, { backend, languages: langs });
-          if (a.engine.fallbackReason?.includes("429") && attempt < 4) throw new Error("rate limited");
+          if (a.engine.fallbackReason === "rate_limited" && attempt < 4) throw new Error("rate limited");
           explained[i] = a.explanations;
           rows[i] = {
             id: it.id,
@@ -167,12 +167,17 @@ async function main() {
   const dataName = path.basename(dataPath, path.extname(dataPath));
   const tag = isFullRun ? "" : `.${[dataName !== "eval" ? dataName : "", limit > 0 ? `first${limit}` : ""].filter(Boolean).join("-")}`;
   writeFileSync(path.join(outDir, `${safe}${tag}.json`), JSON.stringify({ summary, rows }, null, 2) + "\n");
-  if (isFullRun) {
+  // A run where the model often failed measures the rules fallback, not the model: never publish it.
+  const tooManyFallbacks = backend !== "rules" && fallbacks > rows.length * 0.05;
+  if (tooManyFallbacks) {
+    console.log(`\n${fallbacks}/${rows.length} model calls fell back to rules (>5%). Not updating summary.json; re-run when the API is healthy.`);
+  }
+  if (isFullRun && !tooManyFallbacks) {
     const summaryPath = path.join(outDir, "summary.json");
     const all = existsSync(summaryPath) ? JSON.parse(readFileSync(summaryPath, "utf8")) : {};
     all[run] = summary;
     writeFileSync(summaryPath, JSON.stringify(all, null, 2) + "\n");
-  } else {
+  } else if (!tooManyFallbacks) {
     console.log(`\nPartial or held-out run: wrote eval/results/${safe}${tag}.json and left summary.json untouched.`);
   }
 
