@@ -56,3 +56,17 @@ describe("merge", () => {
     expect(mergeVerdict(r.verdict, r.flags, "no_red_flags")).toBe("no_red_flags");
   });
 });
+
+describe("merge cannot be turned green (audit regression)", () => {
+  it("keeps a medium-flag rules 'likely scam' out of the green when the model says no red flags", () => {
+    const r = runRules("Your GTB account will be blocked within 24 hours. Verify at gtbank-verify.com");
+    expect(r.verdict).toBe("likely_scam");
+    expect(mergeVerdict(r.verdict, r.flags, "no_red_flags", r.score)).not.toBe("no_red_flags");
+  });
+
+  it("keeps any rules warning at least suspicious", () => {
+    const r = runRules("Your account will be suspended. Call our agent now.");
+    expect(r.verdict).not.toBe("no_red_flags");
+    expect(mergeVerdict(r.verdict, r.flags, "no_red_flags", r.score)).not.toBe("no_red_flags");
+  });
+});

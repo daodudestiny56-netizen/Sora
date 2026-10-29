@@ -48,15 +48,26 @@ const CATEGORIES = new Set<FlagCategory>([
 ]);
 
 /**
- * Merge rule: the model decides, but rules set a floor. A high-severity rule
- * hit (PIN request, fee-before-reward, mistaken-transfer refund) can never be
- * downgraded to "no red flags", and if the rules alone say "likely scam" a
- * hesitant model can't lower it to "suspicious".
+ * Merge rule: the model decides, but rules set a floor, so the model (or a
+ * prompt injection hidden in the message) can never turn a rules warning green.
+ * - Any rules warning keeps at least "suspicious".
+ * - A rules "likely scam" stays "likely scam" when the model also sees a problem, or when the rules
+ *   score is 5+ whatever the model says.
  */
-export function mergeVerdict(rulesVerdict: Verdict, rulesFlags: RedFlag[], modelVerdict: Verdict): Verdict {
-  let floor: Verdict = hasHighSeverity(rulesFlags) ? "suspicious" : "no_red_flags";
-  if (rulesVerdict === "likely_scam" && modelVerdict !== "no_red_flags") floor = "likely_scam";
+export function mergeVerdict(rulesVerdict: Verdict, rulesFlags: RedFlag[], modelVerdict: Verdict, rulesScore = 0): Verdict {
+  let floor: Verdict = rulesVerdict === "no_red_flags" && !hasHighSeverity(rulesFlags) ? "no_red_flags" : "suspicious";
+  if (rulesVerdict === "likely_scam" && (modelVerdict !== "no_red_flags" || rulesScore >= 5)) floor = "likely_scam";
   return maxVerdict(modelVerdict, floor);
+}
+
+/** Short, non-sensitive reason for a model failure; the full provider error is only logged on the server. */
+export function failureCode(e: unknown): string {
+  const msg = e instanceof Error ? e.message : String(e);
+  console.error("model call failed:", msg.slice(0, 300));
+  if (/\b429\b|quota|rate/i.test(msg)) return "rate_limited";
+  if (/abort|timeout|timed out/i.test(msg)) return "timeout";
+  if (/not set/i.test(msg)) return "not_configured";
+  return "model_error";
 }
 
 /** Keep model flags whose quote really exists in the text; drop the rest. */
@@ -96,7 +107,7 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
   try {
     provider = getProvider(backend);
   } catch (e) {
-    fallbackReason = (e as Error).message;
+    fallbackReason = failureCode(e);
   }
 
   let text = (input.text ?? "").trim();
@@ -107,7 +118,7 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
       user: OCR_USER,
       image: input.image,
       maxTokens: 1024,
-      timeoutMs: Math.min(timeoutMs, 30_000),
+      timeoutMs: Math.min(timeoutMs, 25_000),
     });
     // Rejoin chat-bubble line wraps so split links and phrases still match rules.
     const ocr = unwrap(raw);
@@ -121,9 +132,9 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
   let model: ModelOutput | null = null;
   if (provider) {
     try {
-      model = await callModel(provider, text, langs, Math.max(5_000, timeoutMs - (Date.now() - started)));
+      model = await callModel(provider, text, langs, started + timeoutMs);
     } catch (e) {
-      fallbackReason = (e as Error).message.slice(0, 200);
+      fallbackReason = failureCode(e);
     }
   }
 
@@ -133,13 +144,14 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
   const explanations: Partial<Record<Lang, Explanation>> = {};
 
   if (model) {
-    verdict = mergeVerdict(rules.verdict, rules.flags, model.verdict);
+    verdict = mergeVerdict(rules.verdict, rules.flags, model.verdict, rules.score);
     const grounded = groundFlags(text, model);
     dropped = grounded.dropped;
     // Rules first: they carry fixed, reviewed reasons. Add model flags that point somewhere new.
     flags = [...rules.flags, ...grounded.kept.filter((m) => !rules.flags.some((r) => overlaps(r, m)))];
-    // If the rules raised the verdict, the model's wording no longer matches it; use templates.
-    if (verdict === model.verdict) {
+    // Use the model's wording only when it agrees with the final verdict and the rules didn't object;
+    // otherwise the reviewed templates speak, so injected text can't shape the explanation.
+    if (verdict === model.verdict && !(rules.verdict !== "no_red_flags" && model.verdict === "no_red_flags")) {
       for (const l of langs) {
         const e = model.explanations[l];
         if (e?.summary) explanations[l] = { summary: e.summary.trim(), actions: e.actions.slice(0, 3) };
@@ -168,19 +180,21 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions = {}): P
   };
 }
 
-async function callModel(provider: Provider, text: string, langs: Lang[], timeoutMs: number): Promise<ModelOutput> {
+/** `deadline` is an absolute time: every call, including the repair retry, shares one budget. */
+async function callModel(provider: Provider, text: string, langs: Lang[], deadline: number): Promise<ModelOutput> {
+  const left = () => Math.max(3_000, deadline - Date.now());
   const req = {
     system: analysisSystem(langs),
     user: analysisUser(text, langs),
     maxTokens: 400 + 350 * langs.length,
-    timeoutMs,
   };
-  const raw = await provider.complete(req);
+  const raw = await provider.complete({ ...req, timeoutMs: left() });
   try {
     return parseModelJson(raw);
-  } catch {
+  } catch (e) {
     // One repair attempt: small models occasionally break JSON on long multilingual output.
-    const retry = await provider.complete({ ...req, user: `${req.user}\n\nReturn ONLY valid JSON this time.` });
+    if (deadline - Date.now() < 4_000) throw e;
+    const retry = await provider.complete({ ...req, user: `${req.user}\n\nReturn ONLY valid JSON this time.`, timeoutMs: left() });
     return parseModelJson(retry);
   }
 }
