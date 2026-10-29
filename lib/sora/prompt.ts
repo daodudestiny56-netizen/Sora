@@ -11,7 +11,7 @@ export const OCR_USER = "Transcribe the text in this screenshot.";
 const LANG_GUIDE: Record<Lang, string> = {
   en: "simple English a 60-year-old can follow",
   pcm: "Nigerian Pidgin as spoken in Lagos, written the way people text it",
-  yo: "standard Yorùbá with full tone marks and dot-below letters (ẹ, ọ, ṣ)",
+  yo: "standard Yorùbá with full tone marks and dot-below letters (ẹ, ọ, ṣ); the word for scam/fraud is \"jìbìtì\" (or \"ìtànjẹ\"), never \"ìtàgé\", which means flirting",
   ha: "standard Hausa in Boko script with hooked letters (ɓ, ɗ, ƙ, ƴ)",
   ig: "standard Igbo with dot-below vowels (ị, ọ, ụ) and ṅ",
 };

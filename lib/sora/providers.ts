@@ -29,6 +29,9 @@ export class ProviderError extends Error {
   }
 }
 
+// Shared across requests on a warm instance: once a model rejects thinkingConfig, stop sending it.
+let withThinking = true;
+
 /** Gemma 4 served by Google's Gemini API (free tier with a Google AI Studio key). */
 function gemini(apiKey: string, model: string): Provider {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
@@ -57,10 +60,9 @@ function gemini(apiKey: string, model: string): Provider {
     backend: "gemini",
     model,
     async complete(req) {
-      let withThinking = true;
       let res = await call(req, withThinking);
       // Not every model accepts thinkingConfig; retry once without it and remember that for later retries.
-      if (res.status === 400) {
+      if (res.status === 400 && withThinking) {
         withThinking = false;
         res = await call(req, withThinking);
       }
