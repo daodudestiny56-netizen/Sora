@@ -76,7 +76,7 @@ export function Checker() {
       if (body.text) return analyzeLocally(body.text);
       throw new Error("You're offline. Paste the text and Ṣọ́ra will check it on this device.");
     }
-    const json = await res.json();
+    const json = await res.json().catch(() => ({ error: "Ṣọ́ra took too long to answer. Please try again." }));
     if (!res.ok) throw Object.assign(new Error(json.error ?? "Something went wrong."), { status: res.status });
     return json as Analysis;
   }
