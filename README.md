@@ -14,7 +14,7 @@ Built for **OPEN//BUILD 2026** (OSCA Ile-Ife Hacktoberfest).
 | | |
 |---|---|
 | **Live demo** | https://sora-ecru-kappa.vercel.app |
-| **Demo video** | _add link_ |
+| **Demo video** | _https://drive.google.com/file/d/1xJRNPBgbtd-CdYqbIpat3GN_I3RutuzR/view_ |
 | **Run locally** | [Setup](#7-setup-run-test-reproduce): `npm install && npm run dev` |
 | **Headline result** | Gemma 4 + rules catch **98.9%** of scams with **1.6%** false alarms on our 150-message eval ([§8](#8-evaluation)) |
 | **Licence** | Code: Apache-2.0 · Eval data: CC BY 4.0 |
