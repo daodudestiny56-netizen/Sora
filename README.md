@@ -14,7 +14,7 @@ Built for **OPEN//BUILD 2026** (OSCA Ile-Ife Hacktoberfest).
 | | |
 |---|---|
 | **Live demo** | https://sora-ecru-kappa.vercel.app |
-| **Demo video** | _https://drive.google.com/file/d/1xJRNPBgbtd-CdYqbIpat3GN_I3RutuzR/view_ |
+| **Demo video** | [Watch the 90-second demo](https://drive.google.com/file/d/1xJRNPBgbtd-CdYqbIpat3GN_I3RutuzR/view?usp=sharing) |
 | **Run locally** | [Setup](#7-setup-run-test-reproduce): `npm install && npm run dev` |
 | **Headline result** | Gemma 4 + rules catch **98.9%** of scams with **1.6%** false alarms on our 150-message eval ([§8](#8-evaluation)) |
 | **Licence** | Code: Apache-2.0 · Eval data: CC BY 4.0 |
@@ -155,13 +155,18 @@ available or the phone is offline. It is weaker on tone-marked Yorùbá text.
 **Key decisions**
 - **Rules + model, not model alone.** Rules are instant, explainable, and can't hallucinate. The model
   handles context that rules miss (fake jobs, investment schemes, pastor/landlord requests). The merge
-  ([`lib/sora/analyze.ts`](lib/sora/analyze.ts)) lets the model raise a verdict, but a high-severity rule
-  hit (PIN/OTP/BVN request, fee before reward, mistaken-transfer refund) can **never** become
-  “no red flags”.
+  ([`lib/sora/analyze.ts`](lib/sora/analyze.ts)) lets the model raise a verdict, but the model can
+  **never turn a rules warning green**: any rules warning stays at least *suspicious*, and a strong rules
+  case (a PIN/OTP/BVN request, fee before reward, mistaken-transfer refund, or rules score 5+) stays
+  *likely scam*. When the model disagrees with the rules, the reviewed templates write the explanation,
+  so text injected into a scam message cannot shape what the user reads.
 - **Grounding check.** Every model red flag must quote the message. Quotes are matched ignoring case,
   spacing and tone marks, with a fuzzy fallback for OCR noise ([`lib/sora/grounding.ts`](lib/sora/grounding.ts)).
   Quotes that don't match are dropped and counted, and the eval reports the grounding rate.
 - **Never “safe”.** The calmest verdict is “No red flags found. Still confirm with your bank directly.”
+- **No false reassurance when the check was partial.** If Gemma timed out or failed, or the phone was
+  offline, and the rules found nothing, Ṣọ́ra says **“Couldn't fully check — don't pay or reply yet”**
+  (web, WhatsApp, SMS and USSD, in all five languages) instead of “No red flags found”.
 - **Graceful degradation.** No API key, rate limit or timeout → rules + reviewed templates answer, and
   the UI says “Rules mode”. Transient Gemini API errors are retried twice first. Screenshots fall back
   to on-device OCR, which also rejoins chat-bubble line wraps so split links are still caught. USSD gets
@@ -170,7 +175,12 @@ available or the phone is offline. It is weaker on tone-marked Yorùbá text.
   so a fix or new rule improves every channel at once.
 - **WhatsApp replies in the background.** Twilio waits only 15 s, and reading a screenshot can take
   longer, so the webhook acknowledges at once and replies through Twilio's API after the response
-  (Next.js `after()`). Requests without a valid `X-Twilio-Signature` are rejected.
+  (Next.js `after()`). Requests without a valid `X-Twilio-Signature` are rejected, and media is only
+  ever downloaded from Twilio's own host, so the webhook can't be used to fetch other URLs.
+- **Webhooks can't cost us money.** SMS replies are only sent for genuine Africa's Talking callbacks
+  (a secret in the callback URL), never for the website simulator or anonymous requests. Provider errors
+  are logged on the server and the browser only sees a short code (`timeout`, `rate_limited`…).
+  Every model call, including retries, shares one time budget. Pages can't be framed (clickjacking).
 - **GSM-7 for button phones.** Tone marks force UCS-2 encoding (70 chars per SMS instead of 160) and many
   basic phones can't display them, so SMS/USSD replies are folded to plain letters. Web and WhatsApp
   keep full orthography.
@@ -215,7 +225,7 @@ Optional extras (all in `.env.example`): `VOICE_SERVICE_URL`/`VOICE_SERVICE_TOKE
 
 **Tests and checks**
 ```bash
-npm test            # 33 tests: rules, grounding, merge, OCR cleanup, offline check, game, USSD/SMS/WhatsApp
+npm test            # 65 tests: rules, grounding, merge, prompt, providers, OCR, offline, game, channels, hardening
 npm run typecheck
 npm run lint
 npm run build
@@ -344,7 +354,10 @@ Full guide: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 - **Privacy:** messages are processed in memory only and never stored or logged by Ṣọ́ra. When the
   hosted model is used, the text is sent to Google's Gemini API under Google's terms, and WhatsApp
   messages pass through Twilio. For full privacy, use local Gemma 4 E4B via Ollama or the offline mode.
-- Rate limiting is best-effort per serverless instance.
+- Rate limiting is best-effort per serverless instance. A determined attacker could still use up the
+  free Gemini quota; the app then answers with the rules and says it couldn't fully check.
+- **Yorùbá wording:** Gemma 4 first called a scam “ìtàgé” (flirting). The prompt now gives it the right
+  words (“jìbìtì”, “ìtànjẹ”) and it uses them, but its Yorùbá sentences can still be awkward.
 
 ## 12. Project structure
 ```
@@ -395,6 +408,9 @@ text, new **anonymised scam examples**, new **practice-game messages**, and new 
   (Claude Code, Anthropic) for a large part of the implementation, the first drafts of the
   eval-set messages, the translation templates and the game messages, and drafts of this documentation,
   under the team's direction. The team reviews, tests and is responsible for everything submitted.
+- **Demo video:** the narration is AI text-to-speech (Microsoft's Nigerian-English `en-NG-EzinneNeural`
+  voice) and the music was generated in code for this video. All app scenes are real screen captures of
+  the live site; the opening phone scenes are illustrations of a typical scam.
 
 ## 15. Next steps
 Native-speaker evaluation of all five languages · a Gemma 4 E4B vs 26B vs 31B comparison on the same
