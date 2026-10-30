@@ -16,7 +16,7 @@ Built for **OPEN//BUILD 2026** (OSCA Ile-Ife Hacktoberfest).
 | **Live demo** | https://sora-ecru-kappa.vercel.app |
 | **Demo video** | [Watch the 90-second demo](https://drive.google.com/file/d/1xJRNPBgbtd-CdYqbIpat3GN_I3RutuzR/view?usp=sharing) |
 | **Run locally** | [Setup](#7-setup-run-test-reproduce): `npm install && npm run dev` |
-| **Headline result** | Gemma 4 + rules catch **98.9%** of scams with **1.6%** false alarms on our 150-message eval ([§8](#8-evaluation)) |
+| **Headline result** | On 50 fresh messages nobody tuned on, Gemma 4 + rules caught **all 30 scams** with **1 false alarm in 20** real messages, and every quoted red flag was really in the message ([§8](#8-evaluation)) |
 | **Licence** | Code: Apache-2.0 · Eval data: CC BY 4.0 |
 
 ---
@@ -269,7 +269,7 @@ warnings); accuracy; precision; *grounding rate* (model quotes found in the mess
 | **Gemma 4 26B A4B + rules** ³ | **98.9%** | **95.5%** | **1.6%** | **98.7%** | **100%** | 6.6 s / 8.7 s |
 | Gemma 4 E4B + rules (local) | _pending: needs a machine with Ollama_ | | | | | |
 | Rules only, revision 2, on 50 fresh messages ⁴ | 43.3% | 26.7% | 5.0% | 64.0% | n/a | <1 ms |
-| Gemma 4 26B A4B + rules, on the same 50 fresh messages ⁴ | _pending: needs the Gemini key_ | | | | | |
+| **Gemma 4 26B A4B + rules, on the same 50 fresh messages** ⁴ | **100%** | **100%** | **5.0%** | **98.0%** | **100%** | 6.6 s / 9.5 s |
 
 ¹ Flagged as *likely scam* rather than *suspicious*. ² Share of the model's quoted evidence found word
 for word in the message (0 invented quotes on this set). ³ Measured with rules revision 1 and before the
@@ -304,8 +304,12 @@ written after the rules were frozen, the rules alone caught 43.3% of the scams (
 false alarm in 20 (a real "your card has been blocked at your request" notice). So 98.9% describes how
 well the rules fit the eval set, not how well they work on new scams. The offline mode uses only the
 rules, so it has the same limit. Gemma 4 is the part that handles wording we did not anticipate. It also
-quotes the evidence, reads screenshots and writes the explanation in five languages. Its result on the
-held-out set is pending. The held-out messages are synthetic and AI-assisted like the rest of the data;
+quotes the evidence, reads screenshots and writes the explanation in five languages. On the same 50
+fresh messages (run 2026-10-30 with the current code, 0 model failures), Gemma 4 + rules caught all 30
+scams, all of them as *likely scam*, with the same single false alarm, and every quote it gave was found
+in the message. That is the gap the model closes: 43% → 100% scam recall on wording nobody tuned for.
+Fifty messages is a small sample, so treat it as strong evidence, not a guarantee. The held-out
+messages are synthetic and AI-assisted like the rest of the data;
 real, anonymised messages from our parent testing will be added (see [`data/README.md`](data/README.md)).
 
 **Yorùbá/Hausa/Igbo quality** will be reported as a native-speaker rating (1–5 on 30 explanations), not
